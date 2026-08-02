@@ -1,0 +1,1661 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tabungan Qurban — Masjid Dhafinul Jariyah</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ============ DESIGN TOKENS ============ */
+  :root{
+    --ink:        #182420;
+    --ink-soft:   #4C5851;
+    --ink-faint:  #869089;
+    --paper:      #FAF7F0;
+    --surface:    #FFFFFF;
+    --sand:       #F1EBDC;
+    --border:     #E4DBC5;
+    --border-soft:#EEE7D6;
+
+    --emerald:    #0E3B34;
+    --emerald-2:  #175C50;
+    --emerald-tint:#E6EEEA;
+
+    --gold:       #B6893A;
+    --gold-soft:  #E7C878;
+    --gold-tint:  #F7EFDA;
+
+    --sage:       #6F9089;
+    --sage-tint:  #E9F1EE;
+
+    --brick:      #9B4632;
+    --brick-tint: #F6E5DE;
+
+    --radius-lg: 18px;
+    --radius-md: 12px;
+    --radius-sm: 8px;
+    --shadow-sm: 0 1px 2px rgba(24,36,32,.06);
+    --shadow-md: 0 8px 24px rgba(24,36,32,.08);
+    --shadow-lg: 0 20px 50px rgba(14,59,52,.16);
+
+    --font-display: 'Fraunces', serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    font-family: var(--font-body);
+    background: var(--paper);
+    color: var(--ink);
+    min-height:100vh;
+    -webkit-font-smoothing: antialiased;
+    font-variant-numeric: tabular-nums;
+  }
+
+  a{ color:inherit; }
+
+  ::selection{ background: var(--gold-soft); color: var(--emerald); }
+
+  :focus-visible{
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration: .001ms !important; transition-duration: .001ms !important; }
+  }
+
+  /* ============ DOT-LATTICE TEXTURE (signature texture) ============ */
+  .lattice{
+    background-image: radial-gradient(rgba(231,200,120,.35) 1px, transparent 1.6px);
+    background-size: 24px 24px;
+  }
+
+  /* ============ LOGIN SCREEN ============ */
+  #loginScreen{
+    min-height:100vh;
+    display:grid;
+    grid-template-columns: 1.05fr 1fr;
+  }
+
+  .login-hero{
+    background: radial-gradient(120% 140% at 15% 10%, #144E45 0%, var(--emerald) 55%, #0A2823 100%);
+    position:relative;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    padding: 56px 56px;
+    color: #F4EFE1;
+  }
+
+  .login-hero::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image: radial-gradient(rgba(231,200,120,.16) 1px, transparent 1.6px);
+    background-size: 26px 26px;
+    opacity:.9;
+  }
+
+  .arch-mark{
+    position:absolute;
+    right:-60px;
+    bottom:-40px;
+    width:420px;
+    height:420px;
+    opacity:.5;
+  }
+
+  .hero-brand{ position:relative; z-index:1; }
+
+  .hero-mark{
+    width:44px; height:44px;
+    display:flex; align-items:center; justify-content:center;
+    border:1px solid rgba(231,200,120,.5);
+    border-radius: 10px;
+    margin-bottom:28px;
+  }
+
+  .eyebrow{
+    font-family: var(--font-mono);
+    font-size:11px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color: var(--gold-soft);
+    margin-bottom:14px;
+  }
+
+  .hero-brand h1{
+    font-family: var(--font-display);
+    font-weight:500;
+    font-size: clamp(32px, 3.4vw, 44px);
+    line-height:1.12;
+    max-width: 480px;
+    color:#FBF6E9;
+  }
+
+  .hero-brand p{
+    margin-top:18px;
+    font-size:15.5px;
+    line-height:1.6;
+    color: rgba(244,239,225,.72);
+    max-width: 420px;
+  }
+
+  .hero-stats{
+    position:relative; z-index:1;
+    display:flex;
+    gap:40px;
+    padding-top: 40px;
+    border-top: 1px solid rgba(244,239,225,.16);
+  }
+
+  .hero-stats div strong{
+    display:block;
+    font-family: var(--font-display);
+    font-size:26px;
+    font-weight:500;
+    color:#FBF6E9;
+  }
+  .hero-stats div span{
+    font-size:12px;
+    color: rgba(244,239,225,.6);
+    letter-spacing:.02em;
+  }
+
+  .login-panel{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 40px;
+    background: var(--paper);
+  }
+
+  .login-card{
+    width:100%;
+    max-width: 400px;
+  }
+
+  .login-card > .kicker{
+    font-family: var(--font-mono);
+    font-size:11px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color: var(--gold);
+    margin-bottom:10px;
+  }
+
+  .login-card h2{
+    font-family: var(--font-display);
+    font-size:28px;
+    font-weight:500;
+    color: var(--emerald);
+    margin-bottom:8px;
+  }
+
+  .login-card > p.sub{
+    color: var(--ink-soft);
+    font-size:14px;
+    margin-bottom:32px;
+  }
+
+  .form-group{ margin-bottom:18px; text-align:left; }
+
+  .form-group label{
+    display:block;
+    margin-bottom:7px;
+    color: var(--emerald);
+    font-weight:600;
+    font-size:12.5px;
+    letter-spacing:.01em;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea{
+    width:100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size:14.5px;
+    font-family: var(--font-body);
+    background: var(--surface);
+    color: var(--ink);
+    transition: border-color .15s ease, box-shadow .15s ease;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus{
+    outline:none;
+    border-color: var(--emerald-2);
+    box-shadow: 0 0 0 3px var(--emerald-tint);
+  }
+
+  .form-group textarea{ resize:vertical; line-height:1.55; }
+
+  /* ============ BUTTONS ============ */
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding: 12px 22px;
+    border:none;
+    border-radius: var(--radius-sm);
+    font-size:14px;
+    font-weight:600;
+    font-family: var(--font-body);
+    cursor:pointer;
+    transition: transform .12s ease, box-shadow .12s ease, background .15s ease;
+    white-space:nowrap;
+  }
+  .btn:active{ transform: translateY(1px); }
+
+  .btn-block{ width:100%; }
+
+  .btn-primary{ background: var(--emerald); color:#F7F3E7; }
+  .btn-primary:hover{ background: var(--emerald-2); box-shadow: var(--shadow-md); }
+
+  .btn-gold{ background: var(--gold); color:#2A1F08; }
+  .btn-gold:hover{ background:#A67B31; }
+
+  .btn-success{ background: var(--sage); color:#0F2A24; }
+  .btn-success:hover{ background:#5D8078; }
+
+  .btn-danger{ background: var(--brick); color:#FBEDE7; }
+  .btn-danger:hover{ background:#823A29; }
+
+  .btn-ghost{ background: transparent; color: var(--emerald); border:1.5px solid var(--border); }
+  .btn-ghost:hover{ border-color: var(--emerald); }
+
+  .btn-small{ padding:8px 14px; font-size:12.5px; width:auto; }
+
+  /* ============ CREDENTIAL CALLOUT ============ */
+  .cred-box{
+    margin-top:28px;
+    padding:16px 18px;
+    border-radius: var(--radius-md);
+    background: var(--sand);
+    border:1px solid var(--border-soft);
+  }
+  .cred-box .cred-label{
+    font-size:11px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color: var(--ink-faint);
+    margin-bottom:10px;
+    font-weight:600;
+  }
+  .cred-row{ display:flex; justify-content:space-between; align-items:center; font-size:13px; padding:4px 0; color: var(--ink-soft); }
+  .cred-row code{
+    font-family: var(--font-mono);
+    background: var(--surface);
+    border:1px solid var(--border);
+    padding:2px 8px;
+    border-radius:6px;
+    color: var(--emerald);
+    font-size:12.5px;
+  }
+
+  /* ============ APP SHELL ============ */
+  #appContainer{ display:none; }
+  #appContainer.active{ display:flex; min-height:100vh; }
+
+  .sidebar{
+    width:264px;
+    flex-shrink:0;
+    background: linear-gradient(180deg,#0F3D36 0%, #0A2823 100%);
+    color:#F4EFE1;
+    display:flex;
+    flex-direction:column;
+    position:fixed;
+    top:0; left:0; bottom:0;
+    z-index:50;
+    transition: transform .25s ease;
+  }
+  .sidebar::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image: radial-gradient(rgba(231,200,120,.10) 1px, transparent 1.6px);
+    background-size: 24px 24px;
+    pointer-events:none;
+  }
+
+  .sidebar-brand{
+    position:relative; z-index:1;
+    padding: 26px 24px 22px;
+    border-bottom:1px solid rgba(244,239,225,.12);
+    display:flex; align-items:center; gap:12px;
+  }
+
+  .brand-mark{
+    width:38px; height:38px;
+    border:1px solid rgba(231,200,120,.55);
+    border-radius:9px;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+
+  .sidebar-brand .name{ font-family:var(--font-display); font-size:16.5px; font-weight:600; line-height:1.25; color:#FBF6E9; }
+  .sidebar-brand .sub{ font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--gold-soft); margin-top:3px; }
+
+  .sidebar-nav{
+    position:relative; z-index:1;
+    flex:1;
+    padding: 18px 14px;
+    display:flex;
+    flex-direction:column;
+    gap:3px;
+    overflow-y:auto;
+  }
+
+  .tab-btn{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    width:100%;
+    text-align:left;
+    padding: 11px 14px;
+    background:transparent;
+    border:none;
+    border-radius: var(--radius-sm);
+    color: rgba(244,239,225,.72);
+    font-family: var(--font-body);
+    font-size:13.8px;
+    font-weight:500;
+    cursor:pointer;
+    transition: background .15s ease, color .15s ease;
+  }
+  .tab-btn svg{ width:18px; height:18px; flex-shrink:0; opacity:.85; }
+  .tab-btn:hover{ background: rgba(244,239,225,.06); color:#F4EFE1; }
+  .tab-btn.active{ background: rgba(231,200,120,.14); color:#FBF6E9; box-shadow: inset 3px 0 0 var(--gold-soft); }
+
+  .sidebar-foot{
+    position:relative; z-index:1;
+    padding: 16px 18px 20px;
+    border-top:1px solid rgba(244,239,225,.12);
+  }
+  .sidebar-user{ display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+  .sidebar-user .avatar{
+    width:34px; height:34px; border-radius:50%;
+    background: var(--gold-soft); color:#2A1F08;
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-display); font-weight:600; font-size:14px;
+    flex-shrink:0;
+  }
+  .sidebar-user .who{ font-size:13px; color:#F4EFE1; font-weight:600; line-height:1.3; }
+  .sidebar-user .role{ font-size:10.5px; color: var(--gold-soft); text-transform:uppercase; letter-spacing:.06em; }
+
+  /* ============ MAIN AREA ============ */
+  .main-area{
+    margin-left:264px;
+    flex:1;
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+  }
+
+  .topbar{
+    background: var(--surface);
+    border-bottom:1px solid var(--border-soft);
+    padding: 20px 36px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    position:sticky; top:0; z-index:20;
+  }
+
+  .topbar h1{
+    font-family: var(--font-display);
+    font-size:22px;
+    font-weight:500;
+    color: var(--emerald);
+  }
+  .topbar .crumb{
+    font-family: var(--font-mono);
+    font-size:11px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color: var(--ink-faint);
+    margin-bottom:4px;
+  }
+
+  .hamburger{
+    display:none;
+    background:none; border:none; cursor:pointer;
+    width:38px; height:38px;
+    align-items:center; justify-content:center;
+    color: var(--emerald);
+  }
+
+  .content-scroll{
+    padding: 30px 36px 60px;
+  }
+
+  /* ============ ALERT / TOAST ============ */
+  .alert{
+    position:fixed;
+    top:24px; right:24px;
+    z-index:200;
+    max-width:360px;
+    padding: 14px 18px;
+    border-radius: var(--radius-md);
+    font-size:13.5px;
+    font-weight:500;
+    box-shadow: var(--shadow-lg);
+    display:none;
+    transform: translateY(-8px);
+    opacity:0;
+    transition: transform .2s ease, opacity .2s ease;
+  }
+  .alert.show{ display:block; transform:translateY(0); opacity:1; }
+  .alert.success{ background:#EFF6EE; color:#1E4A3B; border-left:3px solid var(--sage); }
+  .alert.error{ background: var(--brick-tint); color:#5A2115; border-left:3px solid var(--brick); }
+  .alert.warning{ background: var(--gold-tint); color:#5A430F; border-left:3px solid var(--gold); }
+  .alert.info{ background: var(--emerald-tint); color: var(--emerald); border-left:3px solid var(--emerald-2); }
+
+  /* ============ TAB CONTENT ============ */
+  .tab-content{ display:none; animation: fadeUp .35s ease; }
+  .tab-content.active{ display:block; }
+  @keyframes fadeUp{ from{ opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+
+  /* ============ CARDS ============ */
+  .card{
+    background: var(--surface);
+    border:1px solid var(--border-soft);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 22px;
+  }
+
+  .card h2{
+    font-family: var(--font-display);
+    font-size:19px;
+    font-weight:600;
+    color: var(--emerald);
+    margin-bottom:22px;
+    display:flex; align-items:center; gap:10px;
+  }
+
+  .card h3{
+    font-family: var(--font-display);
+    font-size:15.5px;
+    font-weight:600;
+    color: var(--emerald);
+    margin: 22px 0 14px;
+  }
+
+  /* ============ DASHBOARD STAT CARDS ============ */
+  .stats-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap:16px;
+    margin-bottom:8px;
+  }
+
+  .stat-box{
+    background: var(--emerald-tint);
+    border:1px solid var(--border-soft);
+    border-radius: var(--radius-md);
+    padding: 20px 22px;
+    position:relative;
+    overflow:hidden;
+  }
+  .stat-box::before{
+    content:"";
+    position:absolute; top:0; left:0; right:0; height:3px;
+    background: var(--emerald);
+  }
+  .stat-box.success::before{ background: var(--sage); }
+  .stat-box.warning::before{ background: var(--gold); }
+  .stat-box.success{ background: var(--sage-tint); }
+  .stat-box.warning{ background: var(--gold-tint); }
+
+  .stat-box label{
+    display:block;
+    font-size:11.5px;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    color: var(--ink-soft);
+    font-weight:600;
+    margin-bottom:10px;
+  }
+  .stat-box .value{
+    font-family: var(--font-mono);
+    font-size:25px;
+    font-weight:600;
+    color: var(--emerald);
+    letter-spacing:-.01em;
+  }
+
+  /* ============ TABLE ============ */
+  .table-container{ overflow-x:auto; border:1px solid var(--border-soft); border-radius: var(--radius-md); }
+  table{ width:100%; border-collapse:collapse; font-size:13.6px; min-width:520px; }
+  table thead{ background: var(--sand); }
+  table th{
+    padding: 12px 16px;
+    text-align:left;
+    color: var(--emerald);
+    font-weight:600;
+    font-size:11.5px;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    border-bottom:1px solid var(--border);
+  }
+  table td{
+    padding: 13px 16px;
+    border-bottom:1px solid var(--border-soft);
+    color: var(--ink-soft);
+  }
+  table tbody tr:last-child td{ border-bottom:none; }
+  table tbody tr:hover{ background: var(--paper); }
+  table td:nth-child(2), table td:nth-child(3){ font-family: var(--font-mono); color: var(--ink); }
+
+  .loading{ text-align:center; color: var(--ink-faint); padding:24px; font-size:13px; }
+
+  /* ============ BADGES ============ */
+  .badge{
+    display:inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:.02em;
+    text-transform:uppercase;
+  }
+  .badge.pending{ background: var(--gold-tint); color:#7A5A16; }
+  .badge.approved{ background: var(--sage-tint); color:#1E4A3B; }
+  .badge.rejected{ background: var(--brick-tint); color:#7A2E1C; }
+  .badge.sent{ background: var(--sage-tint); color:#1E4A3B; }
+  .badge.scheduled{ background: var(--emerald-tint); color: var(--emerald); }
+  .badge.draft{ background: var(--sand); color: var(--ink-soft); }
+
+  /* ============ SUB-TABS (segmented control) ============ */
+  .sub-tabs{
+    display:flex;
+    gap:4px;
+    margin-bottom:22px;
+    background: var(--sand);
+    padding:5px;
+    border-radius: 999px;
+    width:fit-content;
+    overflow-x:auto;
+    max-width:100%;
+  }
+  .sub-tab-btn{
+    padding: 9px 18px;
+    background: transparent;
+    border:none;
+    border-radius: 999px;
+    cursor:pointer;
+    font-weight:600;
+    font-size:13px;
+    color: var(--ink-soft);
+    white-space:nowrap;
+    transition: all .15s ease;
+  }
+  .sub-tab-btn.active{ background: var(--emerald); color:#F7F3E7; }
+  .sub-tab-btn:hover:not(.active){ color: var(--emerald); }
+
+  .sub-tab-content{ display:none; }
+  .sub-tab-content.active{ display:block; }
+
+  /* ============ MESSAGE PREVIEW ============ */
+  .message-preview{
+    background: var(--sand);
+    border:1px solid var(--border);
+    border-left: 3px solid var(--gold);
+    padding: 18px 20px;
+    border-radius: var(--radius-md);
+    margin: 14px 0 6px;
+    white-space:pre-wrap;
+    font-family: var(--font-mono);
+    font-size:12.8px;
+    line-height:1.65;
+    color: var(--ink);
+    max-height: 280px;
+    overflow-y:auto;
+  }
+
+  .info-box{
+    background: var(--emerald-tint);
+    border-left: 3px solid var(--emerald-2);
+    padding: 14px 18px;
+    border-radius: var(--radius-md);
+    margin-top: 18px;
+    font-size:12.8px;
+    line-height:1.6;
+    color: var(--ink-soft);
+  }
+  .info-box strong{ display:block; margin-bottom:6px; color: var(--emerald); font-size:13px; }
+
+  small{ color: var(--ink-faint); }
+
+  .actions{ display:flex; gap:10px; flex-wrap:wrap; margin: 18px 0 22px; }
+
+  /* ============ MOBILE ============ */
+  .sidebar-overlay{
+    display:none;
+    position:fixed; inset:0;
+    background: rgba(10,25,22,.5);
+    z-index:40;
+  }
+  .sidebar-overlay.show{ display:block; }
+
+  @media (max-width: 980px){
+    .sidebar{ transform: translateX(-100%); }
+    .sidebar.open{ transform: translateX(0); box-shadow: var(--shadow-lg); }
+    .main-area{ margin-left:0; }
+    .hamburger{ display:flex; }
+    .content-scroll{ padding: 24px 18px 50px; }
+    .topbar{ padding: 16px 18px; }
+  }
+
+  @media (max-width: 760px){
+    #loginScreen{ grid-template-columns: 1fr; }
+    .login-hero{ padding: 40px 28px; min-height: 260px; }
+    .hero-stats{ display:none; }
+    .login-panel{ padding: 32px 24px; }
+    .stats-grid{ grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN SCREEN ============ -->
+<div id="loginScreen">
+  <div class="login-hero">
+    <svg class="arch-mark" viewBox="0 0 200 200" fill="none" stroke="#E7C878" stroke-width="1">
+      <path d="M20 190 V110 C20 60 55 25 100 25 C145 25 180 60 180 110 V190" stroke-opacity=".55"/>
+      <path d="M46 190 V115 C46 78 70 50 100 50 C130 50 154 78 154 115 V190" stroke-opacity=".35"/>
+      <circle cx="100" cy="108" r="8" stroke-opacity=".5"/>
+    </svg>
+
+    <div class="hero-brand">
+      <div class="hero-mark">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E7C878" stroke-width="1.6">
+          <path d="M12 3c-3 2.5-4.5 5.5-4.5 8.5 0 4 2.5 6.8 4.5 8.5 2-1.7 4.5-4.5 4.5-8.5 0-3-1.5-6-4.5-8.5z"/>
+        </svg>
+      </div>
+      <div class="eyebrow">Sistem Amanah Digital</div>
+      <h1>Tabungan Qurban, dicatat rapi, dipercaya bersama.</h1>
+      <p>Platform pencatatan tabungan Qurban untuk jemaah Masjid Dhafinul Jariyah — transparan dari transfer hingga hari penyembelihan.</p>
+    </div>
+
+    <div class="hero-stats">
+      <div><strong>250+</strong><span>Anggota terdaftar</span></div>
+      <div><strong>100%</strong><span>Bukti terverifikasi</span></div>
+      <div><strong>Rp 0</strong><span>Biaya operasional</span></div>
+    </div>
+  </div>
+
+  <div class="login-panel">
+    <div class="login-card">
+      <div class="kicker">Masuk Akun</div>
+      <h2>Selamat datang kembali</h2>
+      <p class="sub">Masukkan ID dan kata sandi Anda untuk melanjutkan.</p>
+
+      <div class="form-group">
+        <label>Username / ID Anggota</label>
+        <input type="text" id="loginUsername" placeholder="admin atau nomor ID">
+      </div>
+
+      <div class="form-group">
+        <label>Kata Sandi</label>
+        <input type="password" id="loginPassword" placeholder="Masukkan kata sandi">
+      </div>
+
+      <button class="btn btn-primary btn-block" onclick="login()">Masuk</button>
+
+      <div class="cred-box">
+        <div class="cred-label">Kredensial demo</div>
+        <div class="cred-row"><span>Admin</span> <code>admin / admin123</code></div>
+        <div class="cred-row"><span>Anggota</span> <code>1 / 1</code></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MAIN APP ============ -->
+<div id="appContainer">
+
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-mark">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E7C878" stroke-width="1.6">
+          <path d="M12 3c-3 2.5-4.5 5.5-4.5 8.5 0 4 2.5 6.8 4.5 8.5 2-1.7 4.5-4.5 4.5-8.5 0-3-1.5-6-4.5-8.5z"/>
+        </svg>
+      </div>
+      <div>
+        <div class="name">Dhafinul Jariyah</div>
+        <div class="sub">Tabungan Qurban</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button class="tab-btn active" onclick="switchTab('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+        Dashboard
+      </button>
+      <button class="tab-btn" onclick="switchTab('upload')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v3a2 2 0 002 2h12a2 2 0 002-2v-3"/></svg>
+        Upload Bukti
+      </button>
+      <button class="tab-btn" id="verifyTabBtn" onclick="switchTab('verify')" style="display:none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg>
+        Verifikasi
+      </button>
+      <button class="tab-btn" id="broadcastTabBtn" onclick="switchTab('broadcast')" style="display:none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11v2a2 2 0 002 2h1l4 4v-4h2l6-4V7L12 3H10v4H6a2 2 0 00-2 2z"/><path d="M21 9v6"/></svg>
+        Broadcast WA
+      </button>
+      <button class="tab-btn" onclick="switchTab('history')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3.5 2"/></svg>
+        Riwayat
+      </button>
+      <button class="tab-btn" onclick="switchTab('laporan')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5a1 1 0 011-1h9l6 6v9a1 1 0 01-1 1H5a1 1 0 01-1-1z"/><path d="M14 4v6h6"/></svg>
+        Laporan
+      </button>
+    </nav>
+
+    <div class="sidebar-foot">
+      <div class="sidebar-user">
+        <div class="avatar" id="avatarInitial">A</div>
+        <div>
+          <div class="who" id="userName">—</div>
+          <div class="role" id="userRole">Anggota</div>
+        </div>
+      </div>
+      <button class="btn btn-ghost btn-block btn-small" style="color:#F4EFE1;border-color:rgba(244,239,225,.25);" onclick="logout()">Keluar</button>
+    </div>
+  </aside>
+
+  <div class="main-area">
+    <div class="topbar">
+      <div>
+        <div class="crumb" id="pageCrumb">Ringkasan</div>
+        <h1 id="pageTitle">Dashboard</h1>
+      </div>
+      <button class="hamburger" onclick="toggleSidebar()">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+    </div>
+
+    <div class="content-scroll">
+
+      <!-- Tab: Dashboard -->
+      <div id="dashboard" class="tab-content active">
+        <div class="card">
+          <h2>Ringkasan Tabungan</h2>
+          <div class="stats-grid">
+            <div class="stat-box">
+              <label>Total Tabungan (Disetujui)</label>
+              <div class="value" id="totalSavings">Rp 0</div>
+            </div>
+            <div class="stat-box success">
+              <label>Menunggu Verifikasi</label>
+              <div class="value" id="pendingCount">0</div>
+            </div>
+            <div class="stat-box warning">
+              <label>Total Transaksi</label>
+              <div class="value" id="totalTransactions">0</div>
+            </div>
+          </div>
+
+          <h3>Lima Tabungan Tertinggi</h3>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr><th>Nama Anggota</th><th>Total Tabungan</th><th>Transaksi</th></tr>
+              </thead>
+              <tbody id="topSavingsTable">
+                <tr><td colspan="3" class="loading">Memuat data…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Upload Bukti -->
+      <div id="upload" class="tab-content">
+        <div class="card" style="max-width:560px;">
+          <h2>Upload Bukti Transfer</h2>
+
+          <div class="form-group">
+            <label>Nominal (Rp)</label>
+            <input type="number" id="uploadAmount" placeholder="Contoh: 300000" min="0">
+          </div>
+
+          <div class="form-group">
+            <label>Tanggal Transfer</label>
+            <input type="date" id="uploadDate">
+          </div>
+
+          <div class="form-group">
+            <label>Bank</label>
+            <select id="uploadBank">
+              <option value="">— Pilih Bank —</option>
+              <option value="BCA">BCA</option>
+              <option value="BRI">BRI</option>
+              <option value="Mandiri">Mandiri</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Catatan (opsional)</label>
+            <textarea id="uploadNotes" placeholder="Tambahkan catatan bila perlu" rows="3"></textarea>
+          </div>
+
+          <button class="btn btn-success" onclick="submitUpload()">Kirim Bukti untuk Verifikasi</button>
+        </div>
+      </div>
+
+      <!-- Tab: Verifikasi (Admin) -->
+      <div id="verify" class="tab-content">
+        <div class="card">
+          <h2>Verifikasi Tabungan</h2>
+
+          <div class="sub-tabs">
+            <button class="sub-tab-btn active" onclick="switchVerifyTab('pending')">Menunggu (<span id="pendingBadge">0</span>)</button>
+            <button class="sub-tab-btn" onclick="switchVerifyTab('approved')">Disetujui (<span id="approvedBadge">0</span>)</button>
+            <button class="sub-tab-btn" onclick="switchVerifyTab('rejected')">Ditolak (<span id="rejectedBadge">0</span>)</button>
+          </div>
+
+          <div id="pendingList" class="sub-tab-content active">
+            <div class="table-container">
+              <table>
+                <thead><tr><th>Tanggal</th><th>Nama</th><th>Nominal</th><th>Bank</th><th>Aksi</th></tr></thead>
+                <tbody id="pendingTableBody"><tr><td colspan="5" class="loading">Memuat…</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div id="approvedList" class="sub-tab-content" style="display:none;">
+            <div class="table-container">
+              <table>
+                <thead><tr><th>Tanggal</th><th>Nama</th><th>Nominal</th><th>Disetujui</th></tr></thead>
+                <tbody id="approvedTableBody"><tr><td colspan="4" class="loading">Memuat…</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div id="rejectedList" class="sub-tab-content" style="display:none;">
+            <div class="table-container">
+              <table>
+                <thead><tr><th>Tanggal</th><th>Nama</th><th>Alasan</th></tr></thead>
+                <tbody id="rejectedTableBody"><tr><td colspan="3" class="loading">Memuat…</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Broadcast WhatsApp (Admin) -->
+      <div id="broadcast" class="tab-content">
+        <div class="card">
+          <h2>Broadcast WhatsApp</h2>
+
+          <div class="sub-tabs">
+            <button class="sub-tab-btn active" onclick="switchBroadcastTab('sendNow')">Kirim Sekarang</button>
+            <button class="sub-tab-btn" onclick="switchBroadcastTab('schedule')">Jadwalkan</button>
+            <button class="sub-tab-btn" onclick="switchBroadcastTab('templates')">Template</button>
+            <button class="sub-tab-btn" onclick="switchBroadcastTab('history')">Riwayat</button>
+          </div>
+
+          <!-- Send Now -->
+          <div id="sendNowTab" class="sub-tab-content active">
+            <div class="form-group">
+              <label>Penerima</label>
+              <select id="broadcastRecipients">
+                <option value="ALL">Semua Anggota (250)</option>
+                <option value="APPROVED">Tabungan Disetujui</option>
+                <option value="PENDING">Tabungan Menunggu</option>
+                <option value="NO_UPLOAD">Belum Upload Apapun</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Template</label>
+              <select id="broadcastTemplate" onchange="loadTemplate()">
+                <option value="">— Tulis Manual —</option>
+                <option value="upload_ack">Upload Acknowledgement</option>
+                <option value="approval">Approval Notification</option>
+                <option value="rejection">Rejection Notification</option>
+                <option value="reminder">Monthly Reminder</option>
+                <option value="recap">Monthly Recap</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Judul</label>
+              <input type="text" id="broadcastTitle" placeholder="Contoh: Monthly Reminder">
+            </div>
+
+            <div class="form-group">
+              <label>Pesan</label>
+              <textarea id="broadcastMessage" placeholder="Assalamu'alaikum {NAMA}!..." rows="8" oninput="updateMessagePreview()"></textarea>
+              <small>Variabel: {NAMA} {NOMINAL} {SALDO} {TOTAL} {PESERTA} {PROGRESS} {TANGGAL}</small>
+            </div>
+
+            <h3>Pratinjau Pesan</h3>
+            <div class="message-preview" id="messagePreview">Pratinjau akan muncul di sini.</div>
+
+            <button class="btn btn-success" style="margin-top:18px;" onclick="sendBroadcastNow()">Kirim Sekarang</button>
+
+            <div class="info-box">
+              <strong>Informasi pengiriman</strong>
+              Pesan dikirim langsung ke WhatsApp penerima melalui Fonnte API. Pastikan API key sudah dikonfigurasi.
+            </div>
+          </div>
+
+          <!-- Schedule -->
+          <div id="scheduleTab" class="sub-tab-content" style="display:none;">
+            <div class="form-group">
+              <label>Penerima</label>
+              <select id="scheduleRecipients">
+                <option value="ALL">Semua Anggota</option>
+                <option value="APPROVED">Tabungan Disetujui</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Judul</label>
+              <input type="text" id="scheduleTitle" placeholder="Contoh: Monthly Reminder">
+            </div>
+
+            <div class="form-group">
+              <label>Pesan</label>
+              <textarea id="scheduleMessage" placeholder="Isi pesan…" rows="6"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label>Jadwal Pengiriman</label>
+              <input type="datetime-local" id="scheduleTime">
+            </div>
+
+            <button class="btn btn-gold" onclick="saveScheduledMessage()">Simpan Jadwal</button>
+
+            <div class="info-box">
+              <strong>Cara kerja</strong>
+              Pesan tersimpan di Google Sheets tab "Pesan" berstatus Terjadwal. Untuk pengiriman otomatis, hubungkan dengan Zapier atau layanan backend.
+            </div>
+
+            <h3>Jadwal Tersimpan</h3>
+            <div class="table-container">
+              <table>
+                <thead><tr><th>Judul</th><th>Jadwal</th><th>Status</th><th>Aksi</th></tr></thead>
+                <tbody id="scheduledMessagesTable"><tr><td colspan="4" class="loading">Memuat…</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Templates -->
+          <div id="templatesTab" class="sub-tab-content" style="display:none;">
+            <div class="table-container">
+              <table>
+                <thead><tr><th>Nama</th><th>Tipe</th><th>Pratinjau</th><th>Aksi</th></tr></thead>
+                <tbody id="templatesTable"><tr><td colspan="4" class="loading">Memuat…</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- History -->
+          <div id="historyTab" class="sub-tab-content" style="display:none;">
+            <div class="table-container">
+              <table>
+                <thead><tr><th>Judul</th><th>Penerima</th><th>Status</th><th>Terkirim</th></tr></thead>
+                <tbody id="broadcastHistoryTable"><tr><td colspan="4" class="loading">Memuat…</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Riwayat -->
+      <div id="history" class="tab-content">
+        <div class="card">
+          <h2>Riwayat Tabungan</h2>
+          <div class="table-container">
+            <table>
+              <thead><tr><th>Tanggal</th><th>Nominal</th><th>Status</th><th>Aksi</th></tr></thead>
+              <tbody id="historyTable"><tr><td colspan="4" class="loading">Memuat…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Laporan -->
+      <div id="laporan" class="tab-content">
+        <div class="card">
+          <h2>Laporan</h2>
+          <div class="stats-grid" style="grid-template-columns:minmax(220px,1fr);">
+            <div class="stat-box">
+              <label>Total Disetujui</label>
+              <div class="value" id="reportTotal">Rp 0</div>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="btn btn-primary btn-small" onclick="exportCSV()">Ekspor CSV</button>
+            <button class="btn btn-ghost btn-small" onclick="printReport()">Cetak</button>
+          </div>
+
+          <h3>Rincian per Anggota</h3>
+          <div class="table-container">
+            <table>
+              <thead><tr><th>Nama</th><th>Disetujui</th><th>Menunggu</th></tr></thead>
+              <tbody id="reportTable"><tr><td colspan="3" class="loading">Memuat…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div id="alert" class="alert"></div>
+
+<script>
+// ===== CONFIG =====
+const GOOGLE_CONFIG = {
+    DRIVE_FOLDER_ID: 'YOUR_DRIVE_FOLDER_ID',
+    SHEET_ID: '1UareCU-UMZianvrCKWVeI7_LHZlOgEAOlBJfBwjcH4Q',
+    API_KEY: 'AlzaSyD83nrklbGEiFBbfFhfA-72FVGYjHvjtfc',
+    CLIENT_ID: 'YOUR_CLIENT_ID',
+    FONNTE_API_KEY: 'ke8k4Py9BD3wyKhxFqRd',
+    MEMBERS_RANGE: 'Members!A:F',
+    SAVINGS_RANGE: 'Savings!A:L',
+    VERIFICATIONS_RANGE: 'Verifications!A:F',
+    MESSAGES_RANGE: 'Pesan!A:J'
+};
+
+// ===== DATA STORAGE =====
+let appData = {
+    members: [
+        { id: 1, name: 'Admin Masjid', phone: '08123456789', status: 'active', password: 'admin123' },
+        { id: 2, name: 'Ahmad Dahlan', phone: '08987654321', status: 'active', password: '2' },
+        { id: 3, name: 'Hasan Rifai', phone: '08765432123', status: 'active', password: '3' }
+    ],
+    savings: [],
+    verifications: [],
+    messages: [
+        { id: 1, type: 'TEMPLATE', recipients: '-', title: 'Upload Acknowledgement', message: 'Assalamu\'alaikum {NAMA}! Terima kasih upload Rp {NOMINAL}. Status: PENDING...', scheduledTime: '', status: 'DRAFT', sentAt: '', createdBy: 'admin', notes: 'Template' },
+        { id: 2, type: 'TEMPLATE', recipients: '-', title: 'Approval Notification', message: 'ALHAMDULILLAH {NAMA}! Rp {NOMINAL} APPROVED! Total: Rp {SALDO}', scheduledTime: '', status: 'DRAFT', sentAt: '', createdBy: 'admin', notes: 'Template' },
+        { id: 3, type: 'TEMPLATE', recipients: '-', title: 'Monthly Reminder', message: 'Assalamu\'alaikum {NAMA}! Reminder nabung Qurban! Transfer ke rekening DKM...', scheduledTime: '', status: 'DRAFT', sentAt: '', createdBy: 'admin', notes: 'Template' }
+    ]
+};
+
+let currentUser = null;
+
+// ===== LOGIN =====
+function login() {
+    const username = document.getElementById('loginUsername').value.trim();
+    const password = document.getElementById('loginPassword').value.trim();
+
+    if (username === 'admin' && password === 'admin123') {
+        currentUser = { id: 'admin', name: 'Admin Masjid', role: 'admin' };
+        showApp();
+    } else {
+        const member = appData.members.find(m => m.id.toString() === username && m.password === password);
+        if (member) {
+            currentUser = { id: member.id, name: member.name, role: 'member' };
+            showApp();
+        } else {
+            showAlert('Username atau kata sandi salah', 'error');
+        }
+    }
+}
+
+function logout() {
+    if (confirm('Yakin ingin keluar?')) {
+        currentUser = null;
+        document.getElementById('loginScreen').style.display = 'grid';
+        document.getElementById('appContainer').classList.remove('active');
+    }
+}
+
+function showApp() {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('appContainer').classList.add('active');
+    document.getElementById('userName').textContent = currentUser.name;
+    document.getElementById('userRole').textContent = currentUser.role === 'admin' ? 'Administrator' : 'Anggota';
+    document.getElementById('avatarInitial').textContent = currentUser.name.charAt(0).toUpperCase();
+
+    const verifyTabBtn = document.getElementById('verifyTabBtn');
+    const broadcastTabBtn = document.getElementById('broadcastTabBtn');
+
+    if (currentUser.role === 'admin') {
+        verifyTabBtn.style.display = 'flex';
+        broadcastTabBtn.style.display = 'flex';
+        document.querySelector('.tab-btn:nth-child(2)').style.display = 'none';
+    } else {
+        verifyTabBtn.style.display = 'none';
+        broadcastTabBtn.style.display = 'none';
+    }
+
+    loadData();
+    updateDashboard();
+}
+
+function toggleSidebar(){
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebarOverlay').classList.toggle('show');
+}
+
+// ===== TAB SWITCHING =====
+const TAB_META = {
+    dashboard: { title: 'Dashboard', crumb: 'Ringkasan' },
+    upload: { title: 'Upload Bukti', crumb: 'Tabungan' },
+    verify: { title: 'Verifikasi Tabungan', crumb: 'Admin' },
+    broadcast: { title: 'Broadcast WhatsApp', crumb: 'Admin' },
+    history: { title: 'Riwayat', crumb: 'Tabungan' },
+    laporan: { title: 'Laporan', crumb: 'Ringkasan' }
+};
+
+function switchTab(tabName) {
+    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+    document.querySelectorAll('.sidebar-nav .tab-btn').forEach(btn => btn.classList.remove('active'));
+
+    document.getElementById(tabName).classList.add('active');
+    event.currentTarget.classList.add('active');
+
+    const meta = TAB_META[tabName];
+    if (meta) {
+        document.getElementById('pageTitle').textContent = meta.title;
+        document.getElementById('pageCrumb').textContent = meta.crumb;
+    }
+
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('show');
+
+    if (tabName === 'dashboard') updateDashboard();
+    if (tabName === 'verify') loadVerifyData();
+    if (tabName === 'broadcast') loadBroadcastData();
+    if (tabName === 'history') loadHistory();
+    if (tabName === 'laporan') loadLaporan();
+}
+
+function switchVerifyTab(tabName) {
+    ['pending', 'approved', 'rejected'].forEach(t => {
+        document.getElementById(t + 'List').style.display = 'none';
+    });
+    document.getElementById(tabName + 'List').style.display = 'block';
+
+    document.querySelectorAll('#verify .sub-tabs .sub-tab-btn').forEach(b => b.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+}
+
+function switchBroadcastTab(tabName) {
+    ['sendNow', 'schedule', 'templates', 'history'].forEach(t => {
+        document.getElementById(t + 'Tab').style.display = 'none';
+    });
+    document.getElementById(tabName + 'Tab').style.display = 'block';
+
+    document.querySelectorAll('#broadcast .sub-tabs .sub-tab-btn').forEach(b => b.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+
+    if (tabName === 'schedule') loadScheduledMessages();
+    if (tabName === 'templates') loadTemplates();
+    if (tabName === 'history') loadBroadcastHistory();
+}
+
+// ===== BROADCAST FUNCTIONS =====
+function loadTemplate() {
+    const templateSelect = document.getElementById('broadcastTemplate').value;
+    const templates = {
+        'upload_ack': {
+            title: 'Upload Acknowledgement',
+            message: 'Assalamu\'alaikum {NAMA}! 👋\n\nTerima kasih telah upload bukti transfer Qurban sebesar Rp {NOMINAL}. ✅\n\nStatus: MENUNGGU VERIFIKASI ADMIN\nAdmin akan verifikasi dalam 1-2 jam kerja.\n\nBarakallahu fiik! 🤲\n\nAdmin Masjid'
+        },
+        'approval': {
+            title: 'Approval Notification',
+            message: 'ALHAMDULILLAH! 🎉 {NAMA}\n\nTabungan Qurban Anda sebesar Rp {NOMINAL} telah di-APPROVE! ✅\n\nTotal Tabungan Anda: Rp {SALDO}\nProgress: {PROGRESS}%\n\nTerima kasih! 🤲\n\nAdmin Masjid'
+        },
+        'rejection': {
+            title: 'Rejection Notification',
+            message: '{NAMA}, Mohon Perhatian! ⚠️\n\nTabungan Qurban Anda ditolak dengan alasan:\nBukti transfer tidak terlihat jelas\n\nSilahkan upload ulang bukti yang lebih jelas.\n\nAdmin Masjid'
+        },
+        'reminder': {
+            title: 'Monthly Reminder',
+            message: 'Assalamu\'alaikum {NAMA}! 📣\n\nReminder: Saatnya nabung Qurban! 🐑\n\nStatus tabungan Anda:\nSaldo: Rp {SALDO}\n\nTransfer ke rekening DKM, lalu upload bukti di app.\n\nBarakallahu fiik! 🤲\n\nAdmin Masjid'
+        },
+        'recap': {
+            title: 'Monthly Recap',
+            message: 'REKAPITULASI TABUNGAN QURBAN 📊\n\nAssalamu\'alaikum {NAMA}!\n\nBulan Ini:\nTabungan Anda: Rp {SALDO}\nTotal Semua: Rp {TOTAL}\nPeserta: {PESERTA}/250\nProgress: {PROGRESS}%\n\nTerima kasih! 🙏\n\nAdmin Masjid'
+        }
+    };
+
+    if (templates[templateSelect]) {
+        document.getElementById('broadcastTitle').value = templates[templateSelect].title;
+        document.getElementById('broadcastMessage').value = templates[templateSelect].message;
+        updateMessagePreview();
+    }
+}
+
+function updateMessagePreview() {
+    const message = document.getElementById('broadcastMessage').value;
+    const preview = message
+        .replace(/{NAMA}/g, 'Ahmad Dahlan')
+        .replace(/{NOMINAL}/g, '300.000')
+        .replace(/{SALDO}/g, '1.200.000')
+        .replace(/{TOTAL}/g, '45.000.000')
+        .replace(/{PESERTA}/g, '180')
+        .replace(/{PROGRESS}/g, '45')
+        .replace(/{TANGGAL}/g, new Date().toLocaleDateString('id-ID'));
+
+    document.getElementById('messagePreview').textContent = preview || 'Pratinjau akan muncul di sini.';
+}
+
+function sendBroadcastNow() {
+    const recipients = document.getElementById('broadcastRecipients').value;
+    const title = document.getElementById('broadcastTitle').value.trim();
+    const message = document.getElementById('broadcastMessage').value.trim();
+
+    if (!title || !message) {
+        showAlert('Judul dan pesan harus diisi', 'error');
+        return;
+    }
+
+    const newId = Math.max(...(appData.messages.length > 0 ? appData.messages.map(m => m.id) : [0])) + 1;
+
+    const messageRecord = {
+        id: newId,
+        type: 'BROADCAST',
+        recipients: recipients,
+        title: title,
+        message: message,
+        scheduledTime: 'IMMEDIATE',
+        status: 'SENT',
+        sentAt: new Date().toISOString(),
+        createdBy: currentUser.id,
+        notes: 'Demo send'
+    };
+
+    appData.messages.push(messageRecord);
+    saveData();
+
+    showAlert(`Pesan terkirim ke ${recipients} (mode demo — hubungkan Fonnte API untuk pengiriman nyata)`, 'success');
+    document.getElementById('broadcastMessage').value = '';
+    document.getElementById('broadcastTitle').value = '';
+    updateMessagePreview();
+}
+
+function saveScheduledMessage() {
+    const recipients = document.getElementById('scheduleRecipients').value;
+    const title = document.getElementById('scheduleTitle').value.trim();
+    const message = document.getElementById('scheduleMessage').value.trim();
+    const scheduledTime = document.getElementById('scheduleTime').value;
+
+    if (!title || !message || !scheduledTime) {
+        showAlert('Semua kolom harus diisi', 'error');
+        return;
+    }
+
+    const newId = Math.max(...(appData.messages.length > 0 ? appData.messages.map(m => m.id) : [0])) + 1;
+
+    const messageRecord = {
+        id: newId,
+        type: 'BROADCAST',
+        recipients: recipients,
+        title: title,
+        message: message,
+        scheduledTime: scheduledTime,
+        status: 'SCHEDULED',
+        sentAt: '',
+        createdBy: currentUser.id,
+        notes: 'Scheduled via admin'
+    };
+
+    appData.messages.push(messageRecord);
+    saveData();
+
+    showAlert('Pesan dijadwalkan dan tersimpan di Google Sheets tab "Pesan"', 'success');
+    document.getElementById('scheduleTitle').value = '';
+    document.getElementById('scheduleMessage').value = '';
+    document.getElementById('scheduleTime').value = '';
+
+    loadScheduledMessages();
+}
+
+function loadScheduledMessages() {
+    const scheduled = appData.messages.filter(m => m.status === 'SCHEDULED');
+    const tbody = document.getElementById('scheduledMessagesTable');
+    tbody.innerHTML = '';
+
+    if (scheduled.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="loading">Tidak ada jadwal</td></tr>';
+        return;
+    }
+
+    scheduled.forEach(msg => {
+        const row = tbody.insertRow();
+        row.innerHTML = `
+            <td>${msg.title}</td>
+            <td>${new Date(msg.scheduledTime).toLocaleString('id-ID')}</td>
+            <td><span class="badge scheduled">Terjadwal</span></td>
+            <td><button class="btn btn-danger btn-small" onclick="deleteScheduledMessage(${msg.id})">Hapus</button></td>
+        `;
+    });
+}
+
+function loadTemplates() {
+    const templates = appData.messages.filter(m => m.type === 'TEMPLATE');
+    const tbody = document.getElementById('templatesTable');
+    tbody.innerHTML = '';
+
+    templates.forEach(template => {
+        const row = tbody.insertRow();
+        row.innerHTML = `
+            <td>${template.title}</td>
+            <td><span class="badge draft">Template</span></td>
+            <td>${template.message.substring(0, 50)}…</td>
+            <td><button class="btn btn-ghost btn-small" onclick="useTemplate('${template.title}')">Gunakan</button></td>
+        `;
+    });
+}
+
+function useTemplate(title) {
+    const template = appData.messages.find(m => m.title === title && m.type === 'TEMPLATE');
+    if (template) {
+        document.getElementById('broadcastTitle').value = template.title;
+        document.getElementById('broadcastMessage').value = template.message;
+        updateMessagePreview();
+        document.querySelector('#broadcast .sub-tabs .sub-tab-btn').click();
+    }
+}
+
+function loadBroadcastHistory() {
+    const sent = appData.messages.filter(m => m.status === 'SENT' && m.type === 'BROADCAST');
+    const tbody = document.getElementById('broadcastHistoryTable');
+    tbody.innerHTML = '';
+
+    if (sent.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="loading">Belum ada broadcast terkirim</td></tr>';
+        return;
+    }
+
+    sent.forEach(msg => {
+        const row = tbody.insertRow();
+        row.innerHTML = `
+            <td>${msg.title}</td>
+            <td>${msg.recipients}</td>
+            <td><span class="badge sent">Terkirim</span></td>
+            <td>${new Date(msg.sentAt).toLocaleString('id-ID')}</td>
+        `;
+    });
+}
+
+function loadBroadcastData() {
+    loadTemplates();
+    loadScheduledMessages();
+    loadBroadcastHistory();
+    updateMessagePreview();
+}
+
+function deleteScheduledMessage(id) {
+    if (confirm('Hapus jadwal ini?')) {
+        appData.messages = appData.messages.filter(m => m.id !== id);
+        saveData();
+        loadScheduledMessages();
+        showAlert('Jadwal dihapus', 'success');
+    }
+}
+
+// ===== UPLOAD =====
+function submitUpload() {
+    const amount = parseInt(document.getElementById('uploadAmount').value);
+    const date = document.getElementById('uploadDate').value;
+    const bank = document.getElementById('uploadBank').value;
+    const notes = document.getElementById('uploadNotes').value.trim();
+
+    if (!amount || !date || !bank) {
+        showAlert('Nominal, tanggal, dan bank harus diisi', 'error');
+        return;
+    }
+
+    const newId = Math.max(...(appData.savings.length > 0 ? appData.savings.map(s => s.id) : [0])) + 1;
+
+    const saving = {
+        id: newId,
+        memberId: currentUser.id,
+        amount: amount,
+        transferDate: date,
+        bankSource: bank,
+        accountName: currentUser.name,
+        fileUrl: 'demo.jpg',
+        status: 'PENDING',
+        uploadedAt: new Date().toISOString(),
+        approvedAt: null,
+        approvedBy: null,
+        notes: notes
+    };
+
+    appData.savings.push(saving);
+    saveData();
+
+    showAlert('Bukti transfer berhasil dikirim', 'success');
+    document.getElementById('uploadAmount').value = '';
+    document.getElementById('uploadDate').valueAsDate = new Date();
+    document.getElementById('uploadBank').value = '';
+    document.getElementById('uploadNotes').value = '';
+}
+
+// ===== VERIFY =====
+function loadVerifyData() {
+    const pending = appData.savings.filter(s => s.status === 'PENDING');
+    const approved = appData.savings.filter(s => s.status === 'APPROVED');
+    const rejected = appData.savings.filter(s => s.status === 'REJECTED');
+
+    const pendingBody = document.getElementById('pendingTableBody');
+    pendingBody.innerHTML = '';
+    if (pending.length === 0) {
+        pendingBody.innerHTML = '<tr><td colspan="5" class="loading">Tidak ada yang perlu diverifikasi</td></tr>';
+    } else {
+        pending.forEach(saving => {
+            const member = appData.members.find(m => m.id === saving.memberId);
+            const row = pendingBody.insertRow();
+            row.innerHTML = `
+                <td>${new Date(saving.transferDate).toLocaleDateString('id-ID')}</td>
+                <td>${member?.name}</td>
+                <td>Rp ${saving.amount.toLocaleString('id-ID')}</td>
+                <td>${saving.bankSource}</td>
+                <td><button class="btn btn-success btn-small" onclick="approveSavings(${saving.id})">Setujui</button></td>
+            `;
+        });
+    }
+    document.getElementById('pendingBadge').textContent = pending.length;
+
+    const approvedBody = document.getElementById('approvedTableBody');
+    approvedBody.innerHTML = '';
+    if (approved.length === 0) {
+        approvedBody.innerHTML = '<tr><td colspan="4" class="loading">Belum ada yang disetujui</td></tr>';
+    } else {
+        approved.forEach(saving => {
+            const member = appData.members.find(m => m.id === saving.memberId);
+            const row = approvedBody.insertRow();
+            row.innerHTML = `
+                <td>${new Date(saving.transferDate).toLocaleDateString('id-ID')}</td>
+                <td>${member?.name}</td>
+                <td>Rp ${saving.amount.toLocaleString('id-ID')}</td>
+                <td>${new Date(saving.approvedAt).toLocaleDateString('id-ID')}</td>
+            `;
+        });
+    }
+    document.getElementById('approvedBadge').textContent = approved.length;
+
+    const rejectedBody = document.getElementById('rejectedTableBody');
+    rejectedBody.innerHTML = '';
+    if (rejected.length === 0) {
+        rejectedBody.innerHTML = '<tr><td colspan="3" class="loading">Belum ada yang ditolak</td></tr>';
+    } else {
+        rejected.forEach(saving => {
+            const member = appData.members.find(m => m.id === saving.memberId);
+            const row = rejectedBody.insertRow();
+            row.innerHTML = `
+                <td>${new Date(saving.transferDate).toLocaleDateString('id-ID')}</td>
+                <td>${member?.name}</td>
+                <td>${saving.notes || '-'}</td>
+            `;
+        });
+    }
+    document.getElementById('rejectedBadge').textContent = rejected.length;
+}
+
+function approveSavings(savingsId) {
+    const saving = appData.savings.find(s => s.id === savingsId);
+    saving.status = 'APPROVED';
+    saving.approvedAt = new Date().toISOString();
+    saving.approvedBy = currentUser.name;
+    saveData();
+    showAlert(`Tabungan ${saving.accountName} disetujui`, 'success');
+    loadVerifyData();
+    updateDashboard();
+}
+
+// ===== HISTORY =====
+function loadHistory() {
+    const tbody = document.getElementById('historyTable');
+    tbody.innerHTML = '';
+
+    const mySavings = appData.savings.filter(s => s.memberId === currentUser.id);
+    if (mySavings.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="loading">Belum ada transaksi</td></tr>';
+        return;
+    }
+
+    mySavings.forEach(saving => {
+        const row = tbody.insertRow();
+        row.innerHTML = `
+            <td>${new Date(saving.transferDate).toLocaleDateString('id-ID')}</td>
+            <td>Rp ${saving.amount.toLocaleString('id-ID')}</td>
+            <td><span class="badge ${saving.status.toLowerCase()}">${saving.status}</span></td>
+            <td><button class="btn btn-ghost btn-small" onclick='alert(${JSON.stringify(JSON.stringify(saving, null, 2))})'>Detail</button></td>
+        `;
+    });
+}
+
+// ===== LAPORAN =====
+function loadLaporan() {
+    const approved = appData.savings.filter(s => s.status === 'APPROVED');
+    const totalApproved = approved.reduce((sum, s) => sum + s.amount, 0);
+    document.getElementById('reportTotal').textContent = `Rp ${totalApproved.toLocaleString('id-ID')}`;
+
+    const tbody = document.getElementById('reportTable');
+    tbody.innerHTML = '';
+
+    const memberStats = {};
+    appData.members.forEach(m => {
+        memberStats[m.id] = { name: m.name, approved: 0, pending: 0 };
+    });
+
+    approved.forEach(s => { memberStats[s.memberId].approved += s.amount; });
+    appData.savings.filter(s => s.status === 'PENDING').forEach(s => { memberStats[s.memberId].pending += s.amount; });
+
+    Object.values(memberStats)
+        .filter(m => m.approved > 0 || m.pending > 0)
+        .sort((a, b) => b.approved - a.approved)
+        .forEach(member => {
+            const row = tbody.insertRow();
+            row.innerHTML = `
+                <td>${member.name}</td>
+                <td style="color:var(--sage);font-weight:600;">Rp ${member.approved.toLocaleString('id-ID')}</td>
+                <td>${member.pending > 0 ? `Rp ${member.pending.toLocaleString('id-ID')}` : '-'}</td>
+            `;
+        });
+
+    if (tbody.innerHTML === '') {
+        tbody.innerHTML = '<tr><td colspan="3" class="loading">Belum ada data</td></tr>';
+    }
+}
+
+// ===== DASHBOARD =====
+function updateDashboard() {
+    const approved = appData.savings.filter(s => s.status === 'APPROVED');
+    const pending = appData.savings.filter(s => s.status === 'PENDING');
+    const totalSavings = approved.reduce((sum, s) => sum + s.amount, 0);
+
+    document.getElementById('totalSavings').textContent = `Rp ${totalSavings.toLocaleString('id-ID')}`;
+    document.getElementById('pendingCount').textContent = pending.length;
+    document.getElementById('totalTransactions').textContent = approved.length;
+
+    const top5 = Object.values(
+        approved.reduce((acc, s) => {
+            if (!acc[s.memberId]) {
+                acc[s.memberId] = { id: s.memberId, name: appData.members.find(m => m.id === s.memberId)?.name, total: 0, count: 0 };
+            }
+            acc[s.memberId].total += s.amount;
+            acc[s.memberId].count += 1;
+            return acc;
+        }, {})
+    ).sort((a, b) => b.total - a.total).slice(0, 5);
+
+    const tbody = document.getElementById('topSavingsTable');
+    tbody.innerHTML = '';
+    if (top5.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3" class="loading">Belum ada transaksi</td></tr>';
+    } else {
+        top5.forEach(member => {
+            const row = tbody.insertRow();
+            row.innerHTML = `
+                <td>${member.name}</td>
+                <td style="color:var(--sage);font-weight:600;">Rp ${member.total.toLocaleString('id-ID')}</td>
+                <td>${member.count}</td>
+            `;
+        });
+    }
+}
+
+// ===== EXPORT =====
+function exportCSV() {
+    const approved = appData.savings.filter(s => s.status === 'APPROVED');
+    let csv = 'Laporan Tabungan Qurban\n' + new Date().toLocaleDateString('id-ID') + '\n\n';
+    csv += 'Tanggal,Nama,Nominal,Bank\n';
+    approved.forEach(s => {
+        const member = appData.members.find(m => m.id === s.memberId);
+        csv += `"${s.transferDate}","${member?.name}",${s.amount},"${s.bankSource}"\n`;
+    });
+
+    const element = document.createElement('a');
+    element.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv));
+    element.setAttribute('download', `Laporan_Qurban_${new Date().toISOString().split('T')[0]}.csv`);
+    element.click();
+}
+
+function printReport() { window.print(); }
+
+// ===== STORAGE =====
+function loadData() {
+    const saved = localStorage.getItem('qurbanDataV4');
+    if (saved) appData = JSON.parse(saved);
+}
+
+function saveData() {
+    localStorage.setItem('qurbanDataV4', JSON.stringify(appData));
+}
+
+// ===== ALERT =====
+function showAlert(message, type) {
+    const alert = document.getElementById('alert');
+    alert.textContent = message;
+    alert.className = `alert ${type} show`;
+    setTimeout(() => { alert.classList.remove('show'); }, 4000);
+}
+
+// Init
+document.getElementById('uploadDate').valueAsDate = new Date();
+</script>
+</body>
+</html>
