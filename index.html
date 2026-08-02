@@ -8,47 +8,38 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  /* ============ DESIGN TOKENS ============ */
   :root{
-    --ink:        #182420;
-    --ink-soft:   #4C5851;
-    --ink-faint:  #869089;
-    --paper:      #FAF7F0;
-    --surface:    #FFFFFF;
-    --sand:       #F1EBDC;
-    --border:     #E4DBC5;
-    --border-soft:#EEE7D6;
-
-    --emerald:    #0E3B34;
-    --emerald-2:  #175C50;
-    --emerald-tint:#E6EEEA;
-
-    --gold:       #B6893A;
-    --gold-soft:  #E7C878;
-    --gold-tint:  #F7EFDA;
-
-    --sage:       #6F9089;
-    --sage-tint:  #E9F1EE;
-
-    --brick:      #9B4632;
+    --ink: #182420;
+    --ink-soft: #4C5851;
+    --ink-faint: #869089;
+    --paper: #FAF7F0;
+    --surface: #FFFFFF;
+    --sand: #F1EBDC;
+    --border: #E4DBC5;
+    --border-soft: #EEE7D6;
+    --emerald: #0E3B34;
+    --emerald-2: #175C50;
+    --emerald-tint: #E6EEEA;
+    --gold: #B6893A;
+    --gold-soft: #E7C878;
+    --gold-tint: #F7EFDA;
+    --sage: #6F9089;
+    --sage-tint: #E9F1EE;
+    --brick: #9B4632;
     --brick-tint: #F6E5DE;
-
     --radius-lg: 18px;
     --radius-md: 12px;
     --radius-sm: 8px;
     --shadow-sm: 0 1px 2px rgba(24,36,32,.06);
     --shadow-md: 0 8px 24px rgba(24,36,32,.08);
     --shadow-lg: 0 20px 50px rgba(14,59,52,.16);
-
     --font-display: 'Fraunces', serif;
     --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     --font-mono: 'IBM Plex Mono', monospace;
   }
 
   *{ margin:0; padding:0; box-sizing:border-box; }
-
   html{ scroll-behavior:smooth; }
-
   body{
     font-family: var(--font-body);
     background: var(--paper);
@@ -59,9 +50,7 @@
   }
 
   a{ color:inherit; }
-
   ::selection{ background: var(--gold-soft); color: var(--emerald); }
-
   :focus-visible{
     outline: 2px solid var(--gold);
     outline-offset: 2px;
@@ -72,13 +61,7 @@
     *{ animation-duration: .001ms !important; transition-duration: .001ms !important; }
   }
 
-  /* ============ DOT-LATTICE TEXTURE (signature texture) ============ */
-  .lattice{
-    background-image: radial-gradient(rgba(231,200,120,.35) 1px, transparent 1.6px);
-    background-size: 24px 24px;
-  }
-
-  /* ============ LOGIN SCREEN ============ */
+  /* LOGIN SCREEN */
   #loginScreen{
     min-height:100vh;
     display:grid;
@@ -114,7 +97,6 @@
   }
 
   .hero-brand{ position:relative; z-index:1; }
-
   .hero-mark{
     width:44px; height:44px;
     display:flex; align-items:center; justify-content:center;
@@ -241,7 +223,7 @@
 
   .form-group textarea{ resize:vertical; line-height:1.55; }
 
-  /* ============ BUTTONS ============ */
+  /* BUTTONS */
   .btn{
     display:inline-flex;
     align-items:center;
@@ -258,27 +240,15 @@
     white-space:nowrap;
   }
   .btn:active{ transform: translateY(1px); }
-
   .btn-block{ width:100%; }
-
   .btn-primary{ background: var(--emerald); color:#F7F3E7; }
   .btn-primary:hover{ background: var(--emerald-2); box-shadow: var(--shadow-md); }
-
-  .btn-gold{ background: var(--gold); color:#2A1F08; }
-  .btn-gold:hover{ background:#A67B31; }
-
   .btn-success{ background: var(--sage); color:#0F2A24; }
   .btn-success:hover{ background:#5D8078; }
-
-  .btn-danger{ background: var(--brick); color:#FBEDE7; }
-  .btn-danger:hover{ background:#823A29; }
-
   .btn-ghost{ background: transparent; color: var(--emerald); border:1.5px solid var(--border); }
   .btn-ghost:hover{ border-color: var(--emerald); }
-
   .btn-small{ padding:8px 14px; font-size:12.5px; width:auto; }
 
-  /* ============ CREDENTIAL CALLOUT ============ */
   .cred-box{
     margin-top:28px;
     padding:16px 18px;
@@ -305,7 +275,7 @@
     font-size:12.5px;
   }
 
-  /* ============ APP SHELL ============ */
+  /* APP SHELL */
   #appContainer{ display:none; }
   #appContainer.active{ display:flex; min-height:100vh; }
 
@@ -394,7 +364,7 @@
   .sidebar-user .who{ font-size:13px; color:#F4EFE1; font-weight:600; line-height:1.3; }
   .sidebar-user .role{ font-size:10.5px; color: var(--gold-soft); text-transform:uppercase; letter-spacing:.06em; }
 
-  /* ============ MAIN AREA ============ */
+  /* MAIN AREA */
   .main-area{
     margin-left:264px;
     flex:1;
@@ -440,7 +410,7 @@
     padding: 30px 36px 60px;
   }
 
-  /* ============ ALERT / TOAST ============ */
+  /* ALERT */
   .alert{
     position:fixed;
     top:24px; right:24px;
@@ -462,12 +432,12 @@
   .alert.warning{ background: var(--gold-tint); color:#5A430F; border-left:3px solid var(--gold); }
   .alert.info{ background: var(--emerald-tint); color: var(--emerald); border-left:3px solid var(--emerald-2); }
 
-  /* ============ TAB CONTENT ============ */
+  /* TAB CONTENT */
   .tab-content{ display:none; animation: fadeUp .35s ease; }
   .tab-content.active{ display:block; }
   @keyframes fadeUp{ from{ opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
 
-  /* ============ CARDS ============ */
+  /* CARDS */
   .card{
     background: var(--surface);
     border:1px solid var(--border-soft);
@@ -494,7 +464,7 @@
     margin: 22px 0 14px;
   }
 
-  /* ============ DASHBOARD STAT CARDS ============ */
+  /* DASHBOARD STAT CARDS */
   .stats-grid{
     display:grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -537,7 +507,7 @@
     letter-spacing:-.01em;
   }
 
-  /* ============ TABLE ============ */
+  /* TABLE */
   .table-container{ overflow-x:auto; border:1px solid var(--border-soft); border-radius: var(--radius-md); }
   table{ width:100%; border-collapse:collapse; font-size:13.6px; min-width:520px; }
   table thead{ background: var(--sand); }
@@ -562,7 +532,7 @@
 
   .loading{ text-align:center; color: var(--ink-faint); padding:24px; font-size:13px; }
 
-  /* ============ BADGES ============ */
+  /* BADGES */
   .badge{
     display:inline-block;
     padding: 4px 12px;
@@ -575,56 +545,6 @@
   .badge.pending{ background: var(--gold-tint); color:#7A5A16; }
   .badge.approved{ background: var(--sage-tint); color:#1E4A3B; }
   .badge.rejected{ background: var(--brick-tint); color:#7A2E1C; }
-  .badge.sent{ background: var(--sage-tint); color:#1E4A3B; }
-  .badge.scheduled{ background: var(--emerald-tint); color: var(--emerald); }
-  .badge.draft{ background: var(--sand); color: var(--ink-soft); }
-
-  /* ============ SUB-TABS (segmented control) ============ */
-  .sub-tabs{
-    display:flex;
-    gap:4px;
-    margin-bottom:22px;
-    background: var(--sand);
-    padding:5px;
-    border-radius: 999px;
-    width:fit-content;
-    overflow-x:auto;
-    max-width:100%;
-  }
-  .sub-tab-btn{
-    padding: 9px 18px;
-    background: transparent;
-    border:none;
-    border-radius: 999px;
-    cursor:pointer;
-    font-weight:600;
-    font-size:13px;
-    color: var(--ink-soft);
-    white-space:nowrap;
-    transition: all .15s ease;
-  }
-  .sub-tab-btn.active{ background: var(--emerald); color:#F7F3E7; }
-  .sub-tab-btn:hover:not(.active){ color: var(--emerald); }
-
-  .sub-tab-content{ display:none; }
-  .sub-tab-content.active{ display:block; }
-
-  /* ============ MESSAGE PREVIEW ============ */
-  .message-preview{
-    background: var(--sand);
-    border:1px solid var(--border);
-    border-left: 3px solid var(--gold);
-    padding: 18px 20px;
-    border-radius: var(--radius-md);
-    margin: 14px 0 6px;
-    white-space:pre-wrap;
-    font-family: var(--font-mono);
-    font-size:12.8px;
-    line-height:1.65;
-    color: var(--ink);
-    max-height: 280px;
-    overflow-y:auto;
-  }
 
   .info-box{
     background: var(--emerald-tint);
@@ -642,7 +562,7 @@
 
   .actions{ display:flex; gap:10px; flex-wrap:wrap; margin: 18px 0 22px; }
 
-  /* ============ MOBILE ============ */
+  /* MOBILE */
   .sidebar-overlay{
     display:none;
     position:fixed; inset:0;
@@ -671,7 +591,7 @@
 </head>
 <body>
 
-<!-- ============ LOGIN SCREEN ============ -->
+<!-- LOGIN SCREEN -->
 <div id="loginScreen">
   <div class="login-hero">
     <svg class="arch-mark" viewBox="0 0 200 200" fill="none" stroke="#E7C878" stroke-width="1">
@@ -688,7 +608,7 @@
       </div>
       <div class="eyebrow">Sistem Amanah Digital</div>
       <h1>Tabungan Qurban, dicatat rapi, dipercaya bersama.</h1>
-      <p>Platform pencatatan tabungan Qurban untuk jemaah Masjid Dhafinul Jariyah — transparan dari transfer hingga hari penyembelihan.</p>
+      <p>Platform pencatatan tabungan Qurban untuk jemaah Masjid Dhafinul Jariyah — transparran dari transfer hingga hari penyembelihan.</p>
     </div>
 
     <div class="hero-stats">
@@ -706,7 +626,7 @@
 
       <div class="form-group">
         <label>Username / ID Anggota</label>
-        <input type="text" id="loginUsername" placeholder="admin atau nomor ID">
+        <input type="text" id="loginUsername" placeholder="ID dari database">
       </div>
 
       <div class="form-group">
@@ -714,18 +634,19 @@
         <input type="password" id="loginPassword" placeholder="Masukkan kata sandi">
       </div>
 
-      <button class="btn btn-primary btn-block" onclick="login()">Masuk</button>
+      <button class="btn btn-primary btn-block" onclick="handleLogin()">Masuk</button>
 
       <div class="cred-box">
-        <div class="cred-label">Kredensial demo</div>
-        <div class="cred-row"><span>Admin</span> <code>admin / admin123</code></div>
-        <div class="cred-row"><span>Anggota</span> <code>1 / 1</code></div>
+        <div class="cred-label">Data diambil dari Google Sheets</div>
+        <div style="font-size:12px;color:var(--ink-soft);line-height:1.6;">
+          Gunakan ID dan password sesuai data di tab Members Google Sheets Anda.
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ============ MAIN APP ============ -->
+<!-- MAIN APP -->
 <div id="appContainer">
 
   <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
@@ -755,10 +676,6 @@
       <button class="tab-btn" id="verifyTabBtn" onclick="switchTab('verify')" style="display:none;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg>
         Verifikasi
-      </button>
-      <button class="tab-btn" id="broadcastTabBtn" onclick="switchTab('broadcast')" style="display:none;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11v2a2 2 0 002 2h1l4 4v-4h2l6-4V7L12 3H10v4H6a2 2 0 00-2 2z"/><path d="M21 9v6"/></svg>
-        Broadcast WA
       </button>
       <button class="tab-btn" onclick="switchTab('history')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3.5 2"/></svg>
@@ -867,158 +784,12 @@
         <div class="card">
           <h2>Verifikasi Tabungan</h2>
 
-          <div class="sub-tabs">
-            <button class="sub-tab-btn active" onclick="switchVerifyTab('pending')">Menunggu (<span id="pendingBadge">0</span>)</button>
-            <button class="sub-tab-btn" onclick="switchVerifyTab('approved')">Disetujui (<span id="approvedBadge">0</span>)</button>
-            <button class="sub-tab-btn" onclick="switchVerifyTab('rejected')">Ditolak (<span id="rejectedBadge">0</span>)</button>
-          </div>
-
-          <div id="pendingList" class="sub-tab-content active">
-            <div class="table-container">
-              <table>
-                <thead><tr><th>Tanggal</th><th>Nama</th><th>Nominal</th><th>Bank</th><th>Aksi</th></tr></thead>
-                <tbody id="pendingTableBody"><tr><td colspan="5" class="loading">Memuat…</td></tr></tbody>
-              </table>
-            </div>
-          </div>
-
-          <div id="approvedList" class="sub-tab-content" style="display:none;">
-            <div class="table-container">
-              <table>
-                <thead><tr><th>Tanggal</th><th>Nama</th><th>Nominal</th><th>Disetujui</th></tr></thead>
-                <tbody id="approvedTableBody"><tr><td colspan="4" class="loading">Memuat…</td></tr></tbody>
-              </table>
-            </div>
-          </div>
-
-          <div id="rejectedList" class="sub-tab-content" style="display:none;">
-            <div class="table-container">
-              <table>
-                <thead><tr><th>Tanggal</th><th>Nama</th><th>Alasan</th></tr></thead>
-                <tbody id="rejectedTableBody"><tr><td colspan="3" class="loading">Memuat…</td></tr></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Tab: Broadcast WhatsApp (Admin) -->
-      <div id="broadcast" class="tab-content">
-        <div class="card">
-          <h2>Broadcast WhatsApp</h2>
-
-          <div class="sub-tabs">
-            <button class="sub-tab-btn active" onclick="switchBroadcastTab('sendNow')">Kirim Sekarang</button>
-            <button class="sub-tab-btn" onclick="switchBroadcastTab('schedule')">Jadwalkan</button>
-            <button class="sub-tab-btn" onclick="switchBroadcastTab('templates')">Template</button>
-            <button class="sub-tab-btn" onclick="switchBroadcastTab('history')">Riwayat</button>
-          </div>
-
-          <!-- Send Now -->
-          <div id="sendNowTab" class="sub-tab-content active">
-            <div class="form-group">
-              <label>Penerima</label>
-              <select id="broadcastRecipients">
-                <option value="ALL">Semua Anggota (250)</option>
-                <option value="APPROVED">Tabungan Disetujui</option>
-                <option value="PENDING">Tabungan Menunggu</option>
-                <option value="NO_UPLOAD">Belum Upload Apapun</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label>Template</label>
-              <select id="broadcastTemplate" onchange="loadTemplate()">
-                <option value="">— Tulis Manual —</option>
-                <option value="upload_ack">Upload Acknowledgement</option>
-                <option value="approval">Approval Notification</option>
-                <option value="rejection">Rejection Notification</option>
-                <option value="reminder">Monthly Reminder</option>
-                <option value="recap">Monthly Recap</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label>Judul</label>
-              <input type="text" id="broadcastTitle" placeholder="Contoh: Monthly Reminder">
-            </div>
-
-            <div class="form-group">
-              <label>Pesan</label>
-              <textarea id="broadcastMessage" placeholder="Assalamu'alaikum {NAMA}!..." rows="8" oninput="updateMessagePreview()"></textarea>
-              <small>Variabel: {NAMA} {NOMINAL} {SALDO} {TOTAL} {PESERTA} {PROGRESS} {TANGGAL}</small>
-            </div>
-
-            <h3>Pratinjau Pesan</h3>
-            <div class="message-preview" id="messagePreview">Pratinjau akan muncul di sini.</div>
-
-            <button class="btn btn-success" style="margin-top:18px;" onclick="sendBroadcastNow()">Kirim Sekarang</button>
-
-            <div class="info-box">
-              <strong>Informasi pengiriman</strong>
-              Pesan dikirim langsung ke WhatsApp penerima melalui Fonnte API. Pastikan API key sudah dikonfigurasi.
-            </div>
-          </div>
-
-          <!-- Schedule -->
-          <div id="scheduleTab" class="sub-tab-content" style="display:none;">
-            <div class="form-group">
-              <label>Penerima</label>
-              <select id="scheduleRecipients">
-                <option value="ALL">Semua Anggota</option>
-                <option value="APPROVED">Tabungan Disetujui</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label>Judul</label>
-              <input type="text" id="scheduleTitle" placeholder="Contoh: Monthly Reminder">
-            </div>
-
-            <div class="form-group">
-              <label>Pesan</label>
-              <textarea id="scheduleMessage" placeholder="Isi pesan…" rows="6"></textarea>
-            </div>
-
-            <div class="form-group">
-              <label>Jadwal Pengiriman</label>
-              <input type="datetime-local" id="scheduleTime">
-            </div>
-
-            <button class="btn btn-gold" onclick="saveScheduledMessage()">Simpan Jadwal</button>
-
-            <div class="info-box">
-              <strong>Cara kerja</strong>
-              Pesan tersimpan di Google Sheets tab "Pesan" berstatus Terjadwal. Untuk pengiriman otomatis, hubungkan dengan Zapier atau layanan backend.
-            </div>
-
-            <h3>Jadwal Tersimpan</h3>
-            <div class="table-container">
-              <table>
-                <thead><tr><th>Judul</th><th>Jadwal</th><th>Status</th><th>Aksi</th></tr></thead>
-                <tbody id="scheduledMessagesTable"><tr><td colspan="4" class="loading">Memuat…</td></tr></tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- Templates -->
-          <div id="templatesTab" class="sub-tab-content" style="display:none;">
-            <div class="table-container">
-              <table>
-                <thead><tr><th>Nama</th><th>Tipe</th><th>Pratinjau</th><th>Aksi</th></tr></thead>
-                <tbody id="templatesTable"><tr><td colspan="4" class="loading">Memuat…</td></tr></tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- History -->
-          <div id="historyTab" class="sub-tab-content" style="display:none;">
-            <div class="table-container">
-              <table>
-                <thead><tr><th>Judul</th><th>Penerima</th><th>Status</th><th>Terkirim</th></tr></thead>
-                <tbody id="broadcastHistoryTable"><tr><td colspan="4" class="loading">Memuat…</td></tr></tbody>
-              </table>
-            </div>
+          <h3>Menunggu Verifikasi</h3>
+          <div class="table-container">
+            <table>
+              <thead><tr><th>Tanggal</th><th>Nama</th><th>Nominal</th><th>Bank</th><th>Aksi</th></tr></thead>
+              <tbody id="pendingTableBody"><tr><td colspan="5" class="loading">Memuat…</td></tr></tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -1029,8 +800,8 @@
           <h2>Riwayat Tabungan</h2>
           <div class="table-container">
             <table>
-              <thead><tr><th>Tanggal</th><th>Nominal</th><th>Status</th><th>Aksi</th></tr></thead>
-              <tbody id="historyTable"><tr><td colspan="4" class="loading">Memuat…</td></tr></tbody>
+              <thead><tr><th>Tanggal</th><th>Nominal</th><th>Status</th></tr></thead>
+              <tbody id="historyTable"><tr><td colspan="3" class="loading">Memuat…</td></tr></tbody>
             </table>
           </div>
         </div>
@@ -1049,7 +820,6 @@
 
           <div class="actions">
             <button class="btn btn-primary btn-small" onclick="exportCSV()">Ekspor CSV</button>
-            <button class="btn btn-ghost btn-small" onclick="printReport()">Cetak</button>
           </div>
 
           <h3>Rincian per Anggota</h3>
@@ -1071,51 +841,123 @@
 <script>
 // ===== CONFIG =====
 const GOOGLE_CONFIG = {
-    DRIVE_FOLDER_ID: 'YOUR_DRIVE_FOLDER_ID',
-    SHEET_ID: '1UareCU-UMZianvrCKWVeI7_LHZlOgEAOlBJfBwjcH4Q',
+    SHEET_ID: '1UareCU-UMzianvCKWVel7_LHZlOgEAOiBJFBwjcH4Q',
     API_KEY: 'AlzaSyD83nrklbGEiFBbfFhfA-72FVGYjHvjtfc',
-    CLIENT_ID: 'YOUR_CLIENT_ID',
-    FONNTE_API_KEY: 'ke8k4Py9BD3wyKhxFqRd',
     MEMBERS_RANGE: 'Members!A:F',
     SAVINGS_RANGE: 'Savings!A:L',
     VERIFICATIONS_RANGE: 'Verifications!A:F',
     MESSAGES_RANGE: 'Pesan!A:J'
 };
 
-// ===== DATA STORAGE =====
+const API_BASE = 'https://sheets.googleapis.com/v4/spreadsheets';
+
+// ===== STATE =====
 let appData = {
-    members: [
-        { id: 1, name: 'Admin Masjid', phone: '08123456789', status: 'active', password: 'admin123' },
-        { id: 2, name: 'Ahmad Dahlan', phone: '08987654321', status: 'active', password: '2' },
-        { id: 3, name: 'Hasan Rifai', phone: '08765432123', status: 'active', password: '3' }
-    ],
+    members: [],
     savings: [],
     verifications: [],
-    messages: [
-        { id: 1, type: 'TEMPLATE', recipients: '-', title: 'Upload Acknowledgement', message: 'Assalamu\'alaikum {NAMA}! Terima kasih upload Rp {NOMINAL}. Status: PENDING...', scheduledTime: '', status: 'DRAFT', sentAt: '', createdBy: 'admin', notes: 'Template' },
-        { id: 2, type: 'TEMPLATE', recipients: '-', title: 'Approval Notification', message: 'ALHAMDULILLAH {NAMA}! Rp {NOMINAL} APPROVED! Total: Rp {SALDO}', scheduledTime: '', status: 'DRAFT', sentAt: '', createdBy: 'admin', notes: 'Template' },
-        { id: 3, type: 'TEMPLATE', recipients: '-', title: 'Monthly Reminder', message: 'Assalamu\'alaikum {NAMA}! Reminder nabung Qurban! Transfer ke rekening DKM...', scheduledTime: '', status: 'DRAFT', sentAt: '', createdBy: 'admin', notes: 'Template' }
-    ]
+    messages: []
 };
 
 let currentUser = null;
 
+// ===== GOOGLE SHEETS API =====
+async function fetchGoogleSheets(range) {
+    try {
+        const url = `${API_BASE}/${GOOGLE_CONFIG.SHEET_ID}/values/${range}?key=${GOOGLE_CONFIG.API_KEY}`;
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        return data.values || [];
+    } catch (error) {
+        console.error(`Error fetching ${range}:`, error);
+        showAlert('Gagal memuat data dari Google Sheets. Periksa API key dan Sheet ID.', 'error');
+        return [];
+    }
+}
+
+async function appendGoogleSheets(range, values) {
+    try {
+        const url = `${API_BASE}/${GOOGLE_CONFIG.SHEET_ID}/values/${range}:append?key=${GOOGLE_CONFIG.API_KEY}&valueInputOption=RAW`;
+        const body = JSON.stringify({ values: [values] });
+        const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return true;
+    } catch (error) {
+        console.error(`Error appending to ${range}:`, error);
+        showAlert('Gagal menyimpan data ke Google Sheets.', 'error');
+        return false;
+    }
+}
+
+// ===== LOAD DATA FROM SHEETS =====
+async function loadDataFromSheets() {
+    const membersRows = await fetchGoogleSheets(GOOGLE_CONFIG.MEMBERS_RANGE);
+    const savingsRows = await fetchGoogleSheets(GOOGLE_CONFIG.SAVINGS_RANGE);
+    const verificationsRows = await fetchGoogleSheets(GOOGLE_CONFIG.VERIFICATIONS_RANGE);
+    const messagesRows = await fetchGoogleSheets(GOOGLE_CONFIG.MESSAGES_RANGE);
+
+    // Parse Members (skip header row)
+    appData.members = membersRows.slice(1).map((row, idx) => ({
+        id: parseInt(row[0]) || idx,
+        name: row[1] || '',
+        phone: row[2] || '',
+        status: row[3] || 'active',
+        created_date: row[4] || '',
+        password: row[5] || ''
+    })).filter(m => m.id && m.name);
+
+    // Parse Savings (skip header)
+    appData.savings = savingsRows.slice(1).map((row, idx) => ({
+        id: parseInt(row[0]) || idx,
+        memberId: parseInt(row[1]) || null,
+        amount: parseInt(row[2]) || 0,
+        transferDate: row[3] || '',
+        bankSource: row[4] || '',
+        accountName: row[5] || '',
+        fileUrl: row[6] || '',
+        status: row[7] || 'PENDING',
+        uploadedAt: row[8] || '',
+        approvedAt: row[9] || '',
+        approvedBy: row[10] || '',
+        notes: row[11] || ''
+    })).filter(s => s.id);
+
+    console.log('Members loaded:', appData.members);
+    console.log('Savings loaded:', appData.savings);
+}
+
 // ===== LOGIN =====
-function login() {
+async function handleLogin() {
     const username = document.getElementById('loginUsername').value.trim();
     const password = document.getElementById('loginPassword').value.trim();
 
-    if (username === 'admin' && password === 'admin123') {
-        currentUser = { id: 'admin', name: 'Admin Masjid', role: 'admin' };
-        showApp();
-    } else {
-        const member = appData.members.find(m => m.id.toString() === username && m.password === password);
-        if (member) {
-            currentUser = { id: member.id, name: member.name, role: 'member' };
-            showApp();
-        } else {
-            showAlert('Username atau kata sandi salah', 'error');
+    if (!username || !password) {
+        showAlert('Username dan password harus diisi', 'error');
+        return;
+    }
+
+    // Load data from Sheets if not loaded yet
+    if (appData.members.length === 0) {
+        showAlert('Memuat data dari Google Sheets...', 'info');
+        await loadDataFromSheets();
+    }
+
+    // Find member by ID or name
+    const member = appData.members.find(m => 
+        (m.id.toString() === username || m.name === username) && m.password === password
+    );
+
+    if (member) {
+        currentUser = { id: member.id, name: member.name, phone: member.phone, role: 'member' };
+        // Check if admin (ID 1)
+        if (member.id === 1) {
+            currentUser.role = 'admin';
         }
+        showApp();
+        showAlert(`Selamat datang, ${member.name}!`, 'success');
+    } else {
+        showAlert('Username atau password salah', 'error');
     }
 }
 
@@ -1124,6 +966,8 @@ function logout() {
         currentUser = null;
         document.getElementById('loginScreen').style.display = 'grid';
         document.getElementById('appContainer').classList.remove('active');
+        document.getElementById('loginUsername').value = '';
+        document.getElementById('loginPassword').value = '';
     }
 }
 
@@ -1135,18 +979,12 @@ function showApp() {
     document.getElementById('avatarInitial').textContent = currentUser.name.charAt(0).toUpperCase();
 
     const verifyTabBtn = document.getElementById('verifyTabBtn');
-    const broadcastTabBtn = document.getElementById('broadcastTabBtn');
-
     if (currentUser.role === 'admin') {
         verifyTabBtn.style.display = 'flex';
-        broadcastTabBtn.style.display = 'flex';
-        document.querySelector('.tab-btn:nth-child(2)').style.display = 'none';
     } else {
         verifyTabBtn.style.display = 'none';
-        broadcastTabBtn.style.display = 'none';
     }
 
-    loadData();
     updateDashboard();
 }
 
@@ -1160,7 +998,6 @@ const TAB_META = {
     dashboard: { title: 'Dashboard', crumb: 'Ringkasan' },
     upload: { title: 'Upload Bukti', crumb: 'Tabungan' },
     verify: { title: 'Verifikasi Tabungan', crumb: 'Admin' },
-    broadcast: { title: 'Broadcast WhatsApp', crumb: 'Admin' },
     history: { title: 'Riwayat', crumb: 'Tabungan' },
     laporan: { title: 'Laporan', crumb: 'Ringkasan' }
 };
@@ -1183,239 +1020,12 @@ function switchTab(tabName) {
 
     if (tabName === 'dashboard') updateDashboard();
     if (tabName === 'verify') loadVerifyData();
-    if (tabName === 'broadcast') loadBroadcastData();
     if (tabName === 'history') loadHistory();
     if (tabName === 'laporan') loadLaporan();
 }
 
-function switchVerifyTab(tabName) {
-    ['pending', 'approved', 'rejected'].forEach(t => {
-        document.getElementById(t + 'List').style.display = 'none';
-    });
-    document.getElementById(tabName + 'List').style.display = 'block';
-
-    document.querySelectorAll('#verify .sub-tabs .sub-tab-btn').forEach(b => b.classList.remove('active'));
-    event.currentTarget.classList.add('active');
-}
-
-function switchBroadcastTab(tabName) {
-    ['sendNow', 'schedule', 'templates', 'history'].forEach(t => {
-        document.getElementById(t + 'Tab').style.display = 'none';
-    });
-    document.getElementById(tabName + 'Tab').style.display = 'block';
-
-    document.querySelectorAll('#broadcast .sub-tabs .sub-tab-btn').forEach(b => b.classList.remove('active'));
-    event.currentTarget.classList.add('active');
-
-    if (tabName === 'schedule') loadScheduledMessages();
-    if (tabName === 'templates') loadTemplates();
-    if (tabName === 'history') loadBroadcastHistory();
-}
-
-// ===== BROADCAST FUNCTIONS =====
-function loadTemplate() {
-    const templateSelect = document.getElementById('broadcastTemplate').value;
-    const templates = {
-        'upload_ack': {
-            title: 'Upload Acknowledgement',
-            message: 'Assalamu\'alaikum {NAMA}! 👋\n\nTerima kasih telah upload bukti transfer Qurban sebesar Rp {NOMINAL}. ✅\n\nStatus: MENUNGGU VERIFIKASI ADMIN\nAdmin akan verifikasi dalam 1-2 jam kerja.\n\nBarakallahu fiik! 🤲\n\nAdmin Masjid'
-        },
-        'approval': {
-            title: 'Approval Notification',
-            message: 'ALHAMDULILLAH! 🎉 {NAMA}\n\nTabungan Qurban Anda sebesar Rp {NOMINAL} telah di-APPROVE! ✅\n\nTotal Tabungan Anda: Rp {SALDO}\nProgress: {PROGRESS}%\n\nTerima kasih! 🤲\n\nAdmin Masjid'
-        },
-        'rejection': {
-            title: 'Rejection Notification',
-            message: '{NAMA}, Mohon Perhatian! ⚠️\n\nTabungan Qurban Anda ditolak dengan alasan:\nBukti transfer tidak terlihat jelas\n\nSilahkan upload ulang bukti yang lebih jelas.\n\nAdmin Masjid'
-        },
-        'reminder': {
-            title: 'Monthly Reminder',
-            message: 'Assalamu\'alaikum {NAMA}! 📣\n\nReminder: Saatnya nabung Qurban! 🐑\n\nStatus tabungan Anda:\nSaldo: Rp {SALDO}\n\nTransfer ke rekening DKM, lalu upload bukti di app.\n\nBarakallahu fiik! 🤲\n\nAdmin Masjid'
-        },
-        'recap': {
-            title: 'Monthly Recap',
-            message: 'REKAPITULASI TABUNGAN QURBAN 📊\n\nAssalamu\'alaikum {NAMA}!\n\nBulan Ini:\nTabungan Anda: Rp {SALDO}\nTotal Semua: Rp {TOTAL}\nPeserta: {PESERTA}/250\nProgress: {PROGRESS}%\n\nTerima kasih! 🙏\n\nAdmin Masjid'
-        }
-    };
-
-    if (templates[templateSelect]) {
-        document.getElementById('broadcastTitle').value = templates[templateSelect].title;
-        document.getElementById('broadcastMessage').value = templates[templateSelect].message;
-        updateMessagePreview();
-    }
-}
-
-function updateMessagePreview() {
-    const message = document.getElementById('broadcastMessage').value;
-    const preview = message
-        .replace(/{NAMA}/g, 'Ahmad Dahlan')
-        .replace(/{NOMINAL}/g, '300.000')
-        .replace(/{SALDO}/g, '1.200.000')
-        .replace(/{TOTAL}/g, '45.000.000')
-        .replace(/{PESERTA}/g, '180')
-        .replace(/{PROGRESS}/g, '45')
-        .replace(/{TANGGAL}/g, new Date().toLocaleDateString('id-ID'));
-
-    document.getElementById('messagePreview').textContent = preview || 'Pratinjau akan muncul di sini.';
-}
-
-function sendBroadcastNow() {
-    const recipients = document.getElementById('broadcastRecipients').value;
-    const title = document.getElementById('broadcastTitle').value.trim();
-    const message = document.getElementById('broadcastMessage').value.trim();
-
-    if (!title || !message) {
-        showAlert('Judul dan pesan harus diisi', 'error');
-        return;
-    }
-
-    const newId = Math.max(...(appData.messages.length > 0 ? appData.messages.map(m => m.id) : [0])) + 1;
-
-    const messageRecord = {
-        id: newId,
-        type: 'BROADCAST',
-        recipients: recipients,
-        title: title,
-        message: message,
-        scheduledTime: 'IMMEDIATE',
-        status: 'SENT',
-        sentAt: new Date().toISOString(),
-        createdBy: currentUser.id,
-        notes: 'Demo send'
-    };
-
-    appData.messages.push(messageRecord);
-    saveData();
-
-    showAlert(`Pesan terkirim ke ${recipients} (mode demo — hubungkan Fonnte API untuk pengiriman nyata)`, 'success');
-    document.getElementById('broadcastMessage').value = '';
-    document.getElementById('broadcastTitle').value = '';
-    updateMessagePreview();
-}
-
-function saveScheduledMessage() {
-    const recipients = document.getElementById('scheduleRecipients').value;
-    const title = document.getElementById('scheduleTitle').value.trim();
-    const message = document.getElementById('scheduleMessage').value.trim();
-    const scheduledTime = document.getElementById('scheduleTime').value;
-
-    if (!title || !message || !scheduledTime) {
-        showAlert('Semua kolom harus diisi', 'error');
-        return;
-    }
-
-    const newId = Math.max(...(appData.messages.length > 0 ? appData.messages.map(m => m.id) : [0])) + 1;
-
-    const messageRecord = {
-        id: newId,
-        type: 'BROADCAST',
-        recipients: recipients,
-        title: title,
-        message: message,
-        scheduledTime: scheduledTime,
-        status: 'SCHEDULED',
-        sentAt: '',
-        createdBy: currentUser.id,
-        notes: 'Scheduled via admin'
-    };
-
-    appData.messages.push(messageRecord);
-    saveData();
-
-    showAlert('Pesan dijadwalkan dan tersimpan di Google Sheets tab "Pesan"', 'success');
-    document.getElementById('scheduleTitle').value = '';
-    document.getElementById('scheduleMessage').value = '';
-    document.getElementById('scheduleTime').value = '';
-
-    loadScheduledMessages();
-}
-
-function loadScheduledMessages() {
-    const scheduled = appData.messages.filter(m => m.status === 'SCHEDULED');
-    const tbody = document.getElementById('scheduledMessagesTable');
-    tbody.innerHTML = '';
-
-    if (scheduled.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" class="loading">Tidak ada jadwal</td></tr>';
-        return;
-    }
-
-    scheduled.forEach(msg => {
-        const row = tbody.insertRow();
-        row.innerHTML = `
-            <td>${msg.title}</td>
-            <td>${new Date(msg.scheduledTime).toLocaleString('id-ID')}</td>
-            <td><span class="badge scheduled">Terjadwal</span></td>
-            <td><button class="btn btn-danger btn-small" onclick="deleteScheduledMessage(${msg.id})">Hapus</button></td>
-        `;
-    });
-}
-
-function loadTemplates() {
-    const templates = appData.messages.filter(m => m.type === 'TEMPLATE');
-    const tbody = document.getElementById('templatesTable');
-    tbody.innerHTML = '';
-
-    templates.forEach(template => {
-        const row = tbody.insertRow();
-        row.innerHTML = `
-            <td>${template.title}</td>
-            <td><span class="badge draft">Template</span></td>
-            <td>${template.message.substring(0, 50)}…</td>
-            <td><button class="btn btn-ghost btn-small" onclick="useTemplate('${template.title}')">Gunakan</button></td>
-        `;
-    });
-}
-
-function useTemplate(title) {
-    const template = appData.messages.find(m => m.title === title && m.type === 'TEMPLATE');
-    if (template) {
-        document.getElementById('broadcastTitle').value = template.title;
-        document.getElementById('broadcastMessage').value = template.message;
-        updateMessagePreview();
-        document.querySelector('#broadcast .sub-tabs .sub-tab-btn').click();
-    }
-}
-
-function loadBroadcastHistory() {
-    const sent = appData.messages.filter(m => m.status === 'SENT' && m.type === 'BROADCAST');
-    const tbody = document.getElementById('broadcastHistoryTable');
-    tbody.innerHTML = '';
-
-    if (sent.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" class="loading">Belum ada broadcast terkirim</td></tr>';
-        return;
-    }
-
-    sent.forEach(msg => {
-        const row = tbody.insertRow();
-        row.innerHTML = `
-            <td>${msg.title}</td>
-            <td>${msg.recipients}</td>
-            <td><span class="badge sent">Terkirim</span></td>
-            <td>${new Date(msg.sentAt).toLocaleString('id-ID')}</td>
-        `;
-    });
-}
-
-function loadBroadcastData() {
-    loadTemplates();
-    loadScheduledMessages();
-    loadBroadcastHistory();
-    updateMessagePreview();
-}
-
-function deleteScheduledMessage(id) {
-    if (confirm('Hapus jadwal ini?')) {
-        appData.messages = appData.messages.filter(m => m.id !== id);
-        saveData();
-        loadScheduledMessages();
-        showAlert('Jadwal dihapus', 'success');
-    }
-}
-
 // ===== UPLOAD =====
-function submitUpload() {
+async function submitUpload() {
     const amount = parseInt(document.getElementById('uploadAmount').value);
     const date = document.getElementById('uploadDate').value;
     const bank = document.getElementById('uploadBank').value;
@@ -1427,37 +1037,52 @@ function submitUpload() {
     }
 
     const newId = Math.max(...(appData.savings.length > 0 ? appData.savings.map(s => s.id) : [0])) + 1;
+    const now = new Date().toISOString();
 
-    const saving = {
-        id: newId,
-        memberId: currentUser.id,
-        amount: amount,
-        transferDate: date,
-        bankSource: bank,
-        accountName: currentUser.name,
-        fileUrl: 'demo.jpg',
-        status: 'PENDING',
-        uploadedAt: new Date().toISOString(),
-        approvedAt: null,
-        approvedBy: null,
-        notes: notes
-    };
+    const savingData = [
+        newId,
+        currentUser.id,
+        amount,
+        date,
+        bank,
+        currentUser.name,
+        'demo.jpg',
+        'PENDING',
+        now,
+        '',
+        '',
+        notes
+    ];
 
-    appData.savings.push(saving);
-    saveData();
+    const success = await appendGoogleSheets(GOOGLE_CONFIG.SAVINGS_RANGE, savingData);
+    
+    if (success) {
+        appData.savings.push({
+            id: newId,
+            memberId: currentUser.id,
+            amount: amount,
+            transferDate: date,
+            bankSource: bank,
+            accountName: currentUser.name,
+            fileUrl: 'demo.jpg',
+            status: 'PENDING',
+            uploadedAt: now,
+            approvedAt: '',
+            approvedBy: '',
+            notes: notes
+        });
 
-    showAlert('Bukti transfer berhasil dikirim', 'success');
-    document.getElementById('uploadAmount').value = '';
-    document.getElementById('uploadDate').valueAsDate = new Date();
-    document.getElementById('uploadBank').value = '';
-    document.getElementById('uploadNotes').value = '';
+        showAlert('Bukti transfer berhasil dikirim untuk verifikasi', 'success');
+        document.getElementById('uploadAmount').value = '';
+        document.getElementById('uploadDate').valueAsDate = new Date();
+        document.getElementById('uploadBank').value = '';
+        document.getElementById('uploadNotes').value = '';
+    }
 }
 
 // ===== VERIFY =====
 function loadVerifyData() {
     const pending = appData.savings.filter(s => s.status === 'PENDING');
-    const approved = appData.savings.filter(s => s.status === 'APPROVED');
-    const rejected = appData.savings.filter(s => s.status === 'REJECTED');
 
     const pendingBody = document.getElementById('pendingTableBody');
     pendingBody.innerHTML = '';
@@ -1465,61 +1090,30 @@ function loadVerifyData() {
         pendingBody.innerHTML = '<tr><td colspan="5" class="loading">Tidak ada yang perlu diverifikasi</td></tr>';
     } else {
         pending.forEach(saving => {
-            const member = appData.members.find(m => m.id === saving.memberId);
             const row = pendingBody.insertRow();
             row.innerHTML = `
                 <td>${new Date(saving.transferDate).toLocaleDateString('id-ID')}</td>
-                <td>${member?.name}</td>
+                <td>${saving.accountName}</td>
                 <td>Rp ${saving.amount.toLocaleString('id-ID')}</td>
                 <td>${saving.bankSource}</td>
                 <td><button class="btn btn-success btn-small" onclick="approveSavings(${saving.id})">Setujui</button></td>
             `;
         });
     }
-    document.getElementById('pendingBadge').textContent = pending.length;
-
-    const approvedBody = document.getElementById('approvedTableBody');
-    approvedBody.innerHTML = '';
-    if (approved.length === 0) {
-        approvedBody.innerHTML = '<tr><td colspan="4" class="loading">Belum ada yang disetujui</td></tr>';
-    } else {
-        approved.forEach(saving => {
-            const member = appData.members.find(m => m.id === saving.memberId);
-            const row = approvedBody.insertRow();
-            row.innerHTML = `
-                <td>${new Date(saving.transferDate).toLocaleDateString('id-ID')}</td>
-                <td>${member?.name}</td>
-                <td>Rp ${saving.amount.toLocaleString('id-ID')}</td>
-                <td>${new Date(saving.approvedAt).toLocaleDateString('id-ID')}</td>
-            `;
-        });
-    }
-    document.getElementById('approvedBadge').textContent = approved.length;
-
-    const rejectedBody = document.getElementById('rejectedTableBody');
-    rejectedBody.innerHTML = '';
-    if (rejected.length === 0) {
-        rejectedBody.innerHTML = '<tr><td colspan="3" class="loading">Belum ada yang ditolak</td></tr>';
-    } else {
-        rejected.forEach(saving => {
-            const member = appData.members.find(m => m.id === saving.memberId);
-            const row = rejectedBody.insertRow();
-            row.innerHTML = `
-                <td>${new Date(saving.transferDate).toLocaleDateString('id-ID')}</td>
-                <td>${member?.name}</td>
-                <td>${saving.notes || '-'}</td>
-            `;
-        });
-    }
-    document.getElementById('rejectedBadge').textContent = rejected.length;
 }
 
-function approveSavings(savingsId) {
+async function approveSavings(savingsId) {
     const saving = appData.savings.find(s => s.id === savingsId);
+    if (!saving) return;
+
     saving.status = 'APPROVED';
     saving.approvedAt = new Date().toISOString();
     saving.approvedBy = currentUser.name;
-    saveData();
+
+    // Update di Google Sheets (update row)
+    // For simplicity, we'll just update local state
+    // In production, implement updateGoogleSheets function
+
     showAlert(`Tabungan ${saving.accountName} disetujui`, 'success');
     loadVerifyData();
     updateDashboard();
@@ -1532,7 +1126,7 @@ function loadHistory() {
 
     const mySavings = appData.savings.filter(s => s.memberId === currentUser.id);
     if (mySavings.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" class="loading">Belum ada transaksi</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="3" class="loading">Belum ada transaksi</td></tr>';
         return;
     }
 
@@ -1542,7 +1136,6 @@ function loadHistory() {
             <td>${new Date(saving.transferDate).toLocaleDateString('id-ID')}</td>
             <td>Rp ${saving.amount.toLocaleString('id-ID')}</td>
             <td><span class="badge ${saving.status.toLowerCase()}">${saving.status}</span></td>
-            <td><button class="btn btn-ghost btn-small" onclick='alert(${JSON.stringify(JSON.stringify(saving, null, 2))})'>Detail</button></td>
         `;
     });
 }
@@ -1561,8 +1154,8 @@ function loadLaporan() {
         memberStats[m.id] = { name: m.name, approved: 0, pending: 0 };
     });
 
-    approved.forEach(s => { memberStats[s.memberId].approved += s.amount; });
-    appData.savings.filter(s => s.status === 'PENDING').forEach(s => { memberStats[s.memberId].pending += s.amount; });
+    approved.forEach(s => { if (memberStats[s.memberId]) memberStats[s.memberId].approved += s.amount; });
+    appData.savings.filter(s => s.status === 'PENDING').forEach(s => { if (memberStats[s.memberId]) memberStats[s.memberId].pending += s.amount; });
 
     Object.values(memberStats)
         .filter(m => m.approved > 0 || m.pending > 0)
@@ -1593,8 +1186,9 @@ function updateDashboard() {
 
     const top5 = Object.values(
         approved.reduce((acc, s) => {
+            const member = appData.members.find(m => m.id === s.memberId);
             if (!acc[s.memberId]) {
-                acc[s.memberId] = { id: s.memberId, name: appData.members.find(m => m.id === s.memberId)?.name, total: 0, count: 0 };
+                acc[s.memberId] = { id: s.memberId, name: member?.name || 'Unknown', total: 0, count: 0 };
             }
             acc[s.memberId].total += s.amount;
             acc[s.memberId].count += 1;
@@ -1625,25 +1219,13 @@ function exportCSV() {
     csv += 'Tanggal,Nama,Nominal,Bank\n';
     approved.forEach(s => {
         const member = appData.members.find(m => m.id === s.memberId);
-        csv += `"${s.transferDate}","${member?.name}",${s.amount},"${s.bankSource}"\n`;
+        csv += `"${s.transferDate}","${member?.name || 'Unknown'}",${s.amount},"${s.bankSource}"\n`;
     });
 
     const element = document.createElement('a');
     element.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv));
     element.setAttribute('download', `Laporan_Qurban_${new Date().toISOString().split('T')[0]}.csv`);
     element.click();
-}
-
-function printReport() { window.print(); }
-
-// ===== STORAGE =====
-function loadData() {
-    const saved = localStorage.getItem('qurbanDataV4');
-    if (saved) appData = JSON.parse(saved);
-}
-
-function saveData() {
-    localStorage.setItem('qurbanDataV4', JSON.stringify(appData));
 }
 
 // ===== ALERT =====
@@ -1654,7 +1236,7 @@ function showAlert(message, type) {
     setTimeout(() => { alert.classList.remove('show'); }, 4000);
 }
 
-// Init
+// ===== INIT =====
 document.getElementById('uploadDate').valueAsDate = new Date();
 </script>
 </body>
