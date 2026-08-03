@@ -1321,6 +1321,9 @@ async function sendFontneMessage(phoneNumber, message) {
         return false;
     }
 }
+
+// ===== EXPORT =====
+function exportCSV() {
     const approved = appData.savings.filter(s => s.status === 'APPROVED');
     let csv = 'Laporan Tabungan Qurban\n' + new Date().toLocaleDateString('id-ID') + '\n\n';
     csv += 'Tanggal,Nama,Nominal,Bank\n';
