@@ -840,16 +840,9 @@
 
 <script>
 // ===== CONFIG =====
-const GOOGLE_CONFIG = {
-    SHEET_ID: '1UareCU-UMZianvrCKWVeI7_LHZlOgEAOlBJfBwjcH4Q',
-    API_KEY: 'AlzaSyD83nrklbGEiFBbfFhfA-72FVGYjHvjtfc',
-    MEMBERS_RANGE: 'Members!A:F',
-    SAVINGS_RANGE: 'Savings!A:L',
-    VERIFICATIONS_RANGE: 'Verifications!A:F',
-    MESSAGES_RANGE: 'Pesan!A:J'
+const SHEETDB_CONFIG = {
+    ENDPOINT: 'https://sheetdb.io/api/v1/6ipqgxsr2smql'
 };
-
-const API_BASE = 'https://sheets.googleapis.com/v4/spreadsheets';
 
 // ===== STATE =====
 let appData = {
@@ -861,66 +854,68 @@ let appData = {
 
 let currentUser = null;
 
-// ===== GOOGLE SHEETS API =====
-async function fetchGoogleSheets(range) {
+// ===== SHEETDB API =====
+async function fetchSheetDBTable(tableName) {
     try {
-        const url = `${API_BASE}/${GOOGLE_CONFIG.SHEET_ID}/values/${range}?key=${GOOGLE_CONFIG.API_KEY}`;
+        const url = `${SHEETDB_CONFIG.ENDPOINT}?sheet=${tableName}`;
         const response = await fetch(url);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const data = await response.json();
-        return data.values || [];
+        return data || [];
     } catch (error) {
-        console.error(`Error fetching ${range}:`, error);
-        showAlert('Gagal memuat data dari Google Sheets. Periksa API key dan Sheet ID.', 'error');
+        console.error(`Error fetching ${tableName}:`, error);
         return [];
     }
 }
 
-async function appendGoogleSheets(range, values) {
+async function appendSheetDB(tableName, record) {
     try {
-        const url = `${API_BASE}/${GOOGLE_CONFIG.SHEET_ID}/values/${range}:append?key=${GOOGLE_CONFIG.API_KEY}&valueInputOption=RAW`;
-        const body = JSON.stringify({ values: [values] });
-        const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body });
+        const url = `${SHEETDB_CONFIG.ENDPOINT}?sheet=${tableName}`;
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(record)
+        });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         return true;
     } catch (error) {
-        console.error(`Error appending to ${range}:`, error);
-        showAlert('Gagal menyimpan data ke Google Sheets.', 'error');
+        console.error(`Error appending to ${tableName}:`, error);
+        showAlert('Gagal menyimpan data.', 'error');
         return false;
     }
 }
 
-// ===== LOAD DATA FROM SHEETS =====
+// ===== LOAD DATA FROM SHEETDB =====
 async function loadDataFromSheets() {
-    const membersRows = await fetchGoogleSheets(GOOGLE_CONFIG.MEMBERS_RANGE);
-    const savingsRows = await fetchGoogleSheets(GOOGLE_CONFIG.SAVINGS_RANGE);
-    const verificationsRows = await fetchGoogleSheets(GOOGLE_CONFIG.VERIFICATIONS_RANGE);
-    const messagesRows = await fetchGoogleSheets(GOOGLE_CONFIG.MESSAGES_RANGE);
+    const memberRows = await fetchSheetDBTable('Members');
+    const savingsRows = await fetchSheetDBTable('Savings');
+    const verificationsRows = await fetchSheetDBTable('Verifications');
+    const messagesRows = await fetchSheetDBTable('Pesan');
 
-    // Parse Members (skip header row)
-    appData.members = membersRows.slice(1).map((row, idx) => ({
-        id: parseInt(row[0]) || idx,
-        name: row[1] || '',
-        phone: row[2] || '',
-        status: row[3] || 'active',
-        created_date: row[4] || '',
-        password: row[5] || ''
+    // Parse Members (Sheetdb returns array of objects)
+    appData.members = memberRows.map(row => ({
+        id: parseInt(row.id) || 0,
+        name: row.name || '',
+        phone: row.phone || '',
+        status: row.status || 'active',
+        created_date: row.created_date || '',
+        password: row.password || ''
     })).filter(m => m.id && m.name);
 
-    // Parse Savings (skip header)
-    appData.savings = savingsRows.slice(1).map((row, idx) => ({
-        id: parseInt(row[0]) || idx,
-        memberId: parseInt(row[1]) || null,
-        amount: parseInt(row[2]) || 0,
-        transferDate: row[3] || '',
-        bankSource: row[4] || '',
-        accountName: row[5] || '',
-        fileUrl: row[6] || '',
-        status: row[7] || 'PENDING',
-        uploadedAt: row[8] || '',
-        approvedAt: row[9] || '',
-        approvedBy: row[10] || '',
-        notes: row[11] || ''
+    // Parse Savings
+    appData.savings = savingsRows.map(row => ({
+        id: parseInt(row.id) || 0,
+        memberId: parseInt(row.memberId) || 0,
+        amount: parseInt(row.amount) || 0,
+        transferDate: row.transferDate || '',
+        bankSource: row.bankSource || '',
+        accountName: row.accountName || '',
+        fileUrl: row.fileUrl || '',
+        status: row.status || 'PENDING',
+        uploadedAt: row.uploadedAt || '',
+        approvedAt: row.approvedAt || '',
+        approvedBy: row.approvedBy || '',
+        notes: row.notes || ''
     })).filter(s => s.id);
 
     console.log('Members loaded:', appData.members);
@@ -1039,38 +1034,25 @@ async function submitUpload() {
     const newId = Math.max(...(appData.savings.length > 0 ? appData.savings.map(s => s.id) : [0])) + 1;
     const now = new Date().toISOString();
 
-    const savingData = [
-        newId,
-        currentUser.id,
-        amount,
-        date,
-        bank,
-        currentUser.name,
-        'demo.jpg',
-        'PENDING',
-        now,
-        '',
-        '',
-        notes
-    ];
+    const savingData = {
+        id: newId,
+        memberId: currentUser.id,
+        amount: amount,
+        transferDate: date,
+        bankSource: bank,
+        accountName: currentUser.name,
+        fileUrl: 'demo.jpg',
+        status: 'PENDING',
+        uploadedAt: now,
+        approvedAt: '',
+        approvedBy: '',
+        notes: notes
+    };
 
-    const success = await appendGoogleSheets(GOOGLE_CONFIG.SAVINGS_RANGE, savingData);
+    const success = await appendSheetDB('Savings', savingData);
     
     if (success) {
-        appData.savings.push({
-            id: newId,
-            memberId: currentUser.id,
-            amount: amount,
-            transferDate: date,
-            bankSource: bank,
-            accountName: currentUser.name,
-            fileUrl: 'demo.jpg',
-            status: 'PENDING',
-            uploadedAt: now,
-            approvedAt: '',
-            approvedBy: '',
-            notes: notes
-        });
+        appData.savings.push(savingData);
 
         showAlert('Bukti transfer berhasil dikirim untuk verifikasi', 'success');
         document.getElementById('uploadAmount').value = '';
