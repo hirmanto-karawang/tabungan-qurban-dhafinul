@@ -622,6 +622,112 @@
   .btn-danger{ background: var(--brick-tint); color:#7A2E1C; }
   .btn-danger:hover{ background:#EFD5CC; }
 
+  /* FORM GRID */
+  .form-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap:0 18px;
+  }
+
+  /* FILE DROPZONE */
+  .file-drop{
+    position:relative;
+    border:1.5px dashed var(--border);
+    border-radius: var(--radius-md);
+    background: var(--paper);
+    padding: 30px 20px;
+    text-align:center;
+    cursor:pointer;
+    transition: border-color .18s ease, background .18s ease;
+  }
+  .file-drop:hover{ border-color: var(--emerald-2); background: var(--emerald-tint); }
+  .file-drop.dragover{
+    border-color: var(--gold);
+    background: var(--gold-tint);
+    border-style:solid;
+  }
+  .file-drop input[type="file"]{
+    position:absolute; inset:0;
+    opacity:0;
+    cursor:pointer;
+    width:100%; height:100%;
+  }
+  .file-drop .drop-icon{
+    width:38px; height:38px;
+    margin:0 auto 10px;
+    color: var(--emerald-2);
+    opacity:.75;
+  }
+  .file-drop .drop-title{
+    font-size:14px;
+    font-weight:600;
+    color: var(--emerald);
+    margin-bottom:4px;
+  }
+  .file-drop .drop-hint{ font-size:12px; color: var(--ink-faint); }
+
+  .file-preview{ margin-top:14px; }
+  .preview-image{
+    max-width:100%;
+    max-height:280px;
+    border-radius: var(--radius-md);
+    border:1px solid var(--border);
+    display:block;
+  }
+  .file-chip{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:12px 14px;
+    border-radius: var(--radius-md);
+    background: var(--sage-tint);
+    border:1px solid var(--border-soft);
+    font-size:13px;
+    color:#1E4A3B;
+  }
+  .file-chip .meta{ flex:1; min-width:0; }
+  .file-chip .fname{
+    font-weight:600;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  }
+  .file-chip .fsize{ font-family: var(--font-mono); font-size:11.5px; opacity:.75; }
+  .file-remove{
+    background:none; border:none; cursor:pointer;
+    color: var(--brick); font-size:18px; line-height:1;
+    padding:2px 6px; border-radius:6px;
+  }
+  .file-remove:hover{ background: var(--brick-tint); }
+
+  .field-error{
+    color: var(--brick);
+    font-size:12.5px;
+    margin-top:7px;
+    display:block;
+  }
+
+  .rek-box{
+    background: var(--sand);
+    border:1px solid var(--border-soft);
+    border-radius: var(--radius-md);
+    padding:16px 18px;
+    margin-bottom:24px;
+  }
+  .rek-box .rek-label{
+    font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+    color: var(--ink-faint); font-weight:600; margin-bottom:10px;
+  }
+  .rek-row{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:5px 0; font-size:13.5px; color: var(--ink-soft);
+  }
+  .rek-row code{
+    font-family: var(--font-mono);
+    background: var(--surface);
+    border:1px solid var(--border);
+    padding:3px 10px; border-radius:6px;
+    color: var(--emerald); font-size:13px;
+  }
+
   .info-box{
     background: var(--emerald-tint);
     border-left: 3px solid var(--emerald-2);
@@ -827,35 +933,87 @@
 
       <!-- Tab: Upload Bukti -->
       <div id="upload" class="tab-content">
-        <div class="card" style="max-width:560px;">
-          <h2>Upload Bukti Transfer</h2>
+        <div class="card" style="max-width:760px;">
+          <h2>Upload Bukti Transfer Tabungan</h2>
+          <p style="color:var(--ink-soft); font-size:14px; margin-top:-10px; margin-bottom:22px;">
+            Setelah transfer ke rekening DKM, unggah bukti transfer Anda di sini untuk diverifikasi admin.
+          </p>
 
-          <div class="form-group">
-            <label>Nominal (Rp)</label>
-            <input type="number" id="uploadAmount" placeholder="Contoh: 300000" min="0">
+          <div class="rek-box">
+            <div class="rek-label">Rekening Tujuan DKM</div>
+            <div class="rek-row"><span>Bank Muamalat (147)</span><code>3410 020 637</code></div>
+            <div class="rek-row"><span>Atas nama</span><span style="color:var(--emerald);font-weight:600;">DKM Dhafinul Jariyah</span></div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Nominal Transfer (Rp)</label>
+              <input type="number" id="uploadAmount" placeholder="Contoh: 300000" min="0" oninput="updateAmountHint()">
+              <small id="amountHint" style="display:block;margin-top:6px;">&nbsp;</small>
+            </div>
+
+            <div class="form-group">
+              <label>Tanggal Transfer</label>
+              <input type="date" id="uploadDate">
+            </div>
+
+            <div class="form-group">
+              <label>Bank Asal</label>
+              <select id="uploadBank">
+                <option value="">— Pilih Bank —</option>
+                <option value="BCA">BCA</option>
+                <option value="BRI">BRI</option>
+                <option value="Mandiri">Mandiri</option>
+                <option value="BNI">BNI</option>
+                <option value="BSI">BSI</option>
+                <option value="BTN">BTN</option>
+                <option value="CIMB Niaga">CIMB Niaga</option>
+                <option value="Danamon">Danamon</option>
+                <option value="Permata">Permata</option>
+                <option value="BJB">BJB</option>
+                <option value="Muamalat">Muamalat</option>
+                <option value="Dana">DANA</option>
+                <option value="OVO">OVO</option>
+                <option value="GoPay">GoPay</option>
+                <option value="ShopeePay">ShopeePay</option>
+                <option value="Lainnya">Lainnya</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Atas Nama (dari profil Anda)</label>
+              <input type="text" id="uploadName" readonly style="background:var(--sand); color:var(--ink-soft);">
+            </div>
           </div>
 
           <div class="form-group">
-            <label>Tanggal Transfer</label>
-            <input type="date" id="uploadDate">
+            <label>Bukti Transfer (Screenshot / Foto)</label>
+            <div class="file-drop" id="fileDrop">
+              <input type="file" id="uploadFile" accept="image/png,image/jpeg,application/pdf" onchange="previewFile()">
+              <svg class="drop-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v3a2 2 0 002 2h12a2 2 0 002-2v-3"/>
+              </svg>
+              <div class="drop-title">Klik atau tarik file ke sini</div>
+              <div class="drop-hint">PNG, JPG, atau PDF · maksimal 5 MB</div>
+            </div>
+            <div class="file-preview" id="filePreview"></div>
+            <span class="field-error" id="fileError"></span>
           </div>
 
           <div class="form-group">
-            <label>Bank</label>
-            <select id="uploadBank">
-              <option value="">— Pilih Bank —</option>
-              <option value="BCA">BCA</option>
-              <option value="BRI">BRI</option>
-              <option value="Mandiri">Mandiri</option>
-            </select>
+            <label>Catatan Tambahan (opsional)</label>
+            <textarea id="uploadNotes" rows="3" placeholder="Misal: transfer atas nama Ibu, dll"></textarea>
           </div>
 
-          <div class="form-group">
-            <label>Catatan (opsional)</label>
-            <textarea id="uploadNotes" placeholder="Tambahkan catatan bila perlu" rows="3"></textarea>
+          <div class="actions">
+            <button class="btn btn-success" id="submitUploadBtn" onclick="submitUpload()">Kirim Bukti untuk Verifikasi</button>
+            <button class="btn btn-ghost" onclick="resetUploadForm()">Bersihkan</button>
           </div>
 
-          <button class="btn btn-success" onclick="submitUpload()">Kirim Bukti untuk Verifikasi</button>
+          <div class="info-box">
+            <strong>Proses Verifikasi</strong>
+            Admin akan memeriksa bukti transfer Anda dalam 1–2 jam kerja. Status akan berubah menjadi Disetujui, atau Anda akan diberi tahu bila ada yang perlu diperbaiki. Pantau melalui menu Riwayat.
+          </div>
         </div>
       </div>
 
@@ -1217,6 +1375,7 @@ function showApp() {
     document.getElementById('userName').textContent = currentUser.name;
     document.getElementById('userRole').textContent = currentUser.role === 'admin' ? 'Administrator' : 'Anggota';
     document.getElementById('avatarInitial').textContent = currentUser.name.charAt(0).toUpperCase();
+    document.getElementById('uploadName').value = currentUser.name;
 
     const verifyTabBtn = document.getElementById('verifyTabBtn');
     const broadcastTabBtn = document.getElementById('broadcastTabBtn');
@@ -1273,19 +1432,143 @@ function switchTab(tabName) {
 }
 
 // ===== UPLOAD =====
+let selectedFileData = null;
+
+function formatBytes(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(0) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+}
+
+function updateAmountHint() {
+    const val = parseInt(document.getElementById('uploadAmount').value);
+    const hint = document.getElementById('amountHint');
+    hint.innerHTML = val > 0 ? 'Rp ' + val.toLocaleString('id-ID') : '&nbsp;';
+    hint.style.color = 'var(--emerald-2)';
+}
+
+function previewFile() {
+    const input = document.getElementById('uploadFile');
+    const file = input.files[0];
+    const preview = document.getElementById('filePreview');
+    const error = document.getElementById('fileError');
+
+    error.textContent = '';
+    preview.innerHTML = '';
+    selectedFileData = null;
+
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+        error.textContent = `File terlalu besar (${formatBytes(file.size)}). Maksimal 5 MB.`;
+        input.value = '';
+        return;
+    }
+
+    const allowed = ['image/png', 'image/jpeg', 'application/pdf'];
+    if (!allowed.includes(file.type)) {
+        error.textContent = 'Tipe file tidak didukung. Gunakan PNG, JPG, atau PDF.';
+        input.value = '';
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        selectedFileData = {
+            name: file.name,
+            type: file.type,
+            size: file.size,
+            data: e.target.result
+        };
+
+        const chip = `
+            <div class="file-chip">
+              <div class="meta">
+                <div class="fname">${file.name}</div>
+                <div class="fsize">${formatBytes(file.size)}</div>
+              </div>
+              <button class="file-remove" onclick="removeFile()" title="Hapus file">&times;</button>
+            </div>`;
+
+        if (file.type.startsWith('image/')) {
+            preview.innerHTML = chip + `<img src="${e.target.result}" class="preview-image" alt="Pratinjau bukti transfer" style="margin-top:12px;">`;
+        } else {
+            preview.innerHTML = chip;
+        }
+    };
+    reader.readAsDataURL(file);
+}
+
+function removeFile() {
+    document.getElementById('uploadFile').value = '';
+    document.getElementById('filePreview').innerHTML = '';
+    document.getElementById('fileError').textContent = '';
+    selectedFileData = null;
+}
+
+function resetUploadForm() {
+    document.getElementById('uploadAmount').value = '';
+    document.getElementById('uploadDate').valueAsDate = new Date();
+    document.getElementById('uploadBank').value = '';
+    document.getElementById('uploadNotes').value = '';
+    document.getElementById('amountHint').innerHTML = '&nbsp;';
+    removeFile();
+}
+
+function initFileDropzone() {
+    const drop = document.getElementById('fileDrop');
+    if (!drop) return;
+
+    ['dragenter', 'dragover'].forEach(evt =>
+        drop.addEventListener(evt, e => {
+            e.preventDefault();
+            drop.classList.add('dragover');
+        })
+    );
+    ['dragleave', 'drop'].forEach(evt =>
+        drop.addEventListener(evt, e => {
+            e.preventDefault();
+            drop.classList.remove('dragover');
+        })
+    );
+    drop.addEventListener('drop', e => {
+        if (e.dataTransfer.files.length) {
+            document.getElementById('uploadFile').files = e.dataTransfer.files;
+            previewFile();
+        }
+    });
+}
+
 async function submitUpload() {
     const amount = parseInt(document.getElementById('uploadAmount').value);
     const date = document.getElementById('uploadDate').value;
     const bank = document.getElementById('uploadBank').value;
     const notes = document.getElementById('uploadNotes').value.trim();
+    const btn = document.getElementById('submitUploadBtn');
 
-    if (!amount || !date || !bank) {
-        showAlert('Nominal, tanggal, dan bank harus diisi', 'error');
+    if (!amount || amount <= 0) {
+        showAlert('Nominal transfer harus diisi', 'error');
+        return;
+    }
+    if (!date) {
+        showAlert('Tanggal transfer harus diisi', 'error');
+        return;
+    }
+    if (!bank) {
+        showAlert('Bank asal harus dipilih', 'error');
+        return;
+    }
+    if (!selectedFileData) {
+        showAlert('Bukti transfer harus diunggah', 'error');
         return;
     }
 
-    const newId = Math.max(...(appData.savings.length > 0 ? appData.savings.map(s => s.id) : [0])) + 1;
-    const now = new Date().toISOString();
+    btn.disabled = true;
+    btn.textContent = 'Mengirim…';
+
+    const newId = appData.savings.length > 0
+        ? Math.max(...appData.savings.map(s => s.id)) + 1
+        : 1;
 
     const savingData = {
         id: newId,
@@ -1294,24 +1577,24 @@ async function submitUpload() {
         transferDate: date,
         bankSource: bank,
         accountName: currentUser.name,
-        fileUrl: 'demo.jpg',
+        fileUrl: selectedFileData.name,
         status: 'PENDING',
-        uploadedAt: now,
+        uploadedAt: new Date().toISOString(),
         approvedAt: '',
         approvedBy: '',
         notes: notes
     };
 
     const success = await appendSheetDB('Savings', savingData);
-    
+
+    btn.disabled = false;
+    btn.textContent = 'Kirim Bukti untuk Verifikasi';
+
     if (success) {
         appData.savings.push(savingData);
-
-        showAlert('Bukti transfer berhasil dikirim untuk verifikasi', 'success');
-        document.getElementById('uploadAmount').value = '';
-        document.getElementById('uploadDate').valueAsDate = new Date();
-        document.getElementById('uploadBank').value = '';
-        document.getElementById('uploadNotes').value = '';
+        showAlert(`Bukti transfer Rp ${amount.toLocaleString('id-ID')} berhasil dikirim untuk verifikasi`, 'success');
+        resetUploadForm();
+        updateDashboard();
     }
 }
 
@@ -1833,6 +2116,7 @@ function showAlert(message, type) {
 
 // ===== INIT =====
 document.getElementById('uploadDate').valueAsDate = new Date();
+initFileDropzone();
 </script>
 </body>
 </html>
