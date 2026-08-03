@@ -728,6 +728,65 @@
     color: var(--emerald); font-size:13px;
   }
 
+  /* MODAL PREVIEW FILE */
+  .modal-overlay{
+    display:none;
+    position:fixed; inset:0;
+    background:rgba(0,0,0,.65);
+    z-index:999;
+    align-items:center; justify-content:center;
+  }
+  .modal-overlay.show{ display:flex; }
+  .modal-content{
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    padding:0;
+    max-width:90vw;
+    max-height:90vh;
+    display:flex;
+    flex-direction:column;
+    box-shadow: var(--shadow-lg);
+    position:relative;
+  }
+  .modal-header{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 24px;
+    border-bottom:1px solid var(--border-soft);
+    flex-shrink:0;
+  }
+  .modal-title{ font-size:15px; font-weight:700; color:var(--ink); }
+  .modal-close{
+    background:none; border:none; cursor:pointer; color:var(--ink-faint);
+    font-size:24px; width:32px; height:32px; display:flex; align-items:center; justify-content:center;
+    border-radius:6px; transition: background .15s ease;
+  }
+  .modal-close:hover{ background:var(--sand); }
+  .modal-body{
+    flex:1; overflow:auto; padding:24px;
+    display:flex; align-items:center; justify-content:center;
+    min-height:200px;
+  }
+  .preview-full-image{
+    max-width:100%; max-height:100%;
+    border-radius: var(--radius-md);
+    display:block;
+  }
+  .preview-pdf{
+    color: var(--ink-soft);
+    text-align:center;
+    font-size:14px;
+  }
+
+  .file-thumb-btn{
+    background:none; border:1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding:4px 8px;
+    cursor:pointer; color:var(--emerald);
+    font-size:12px; font-weight:600;
+    transition: background .15s ease, border-color .15s ease;
+  }
+  .file-thumb-btn:hover{ background:var(--emerald-tint); border-color:var(--emerald-2); }
+
   .info-box{
     background: var(--emerald-tint);
     border-left: 3px solid var(--emerald-2);
@@ -1229,6 +1288,19 @@
 
 <div id="alert" class="alert"></div>
 
+  <!-- Modal Preview Bukti Transfer -->
+  <div id="previewModal" class="modal-overlay">
+    <div class="modal-content" style="width:600px;">
+      <div class="modal-header">
+        <div class="modal-title" id="previewTitle">Bukti Transfer</div>
+        <button class="modal-close" onclick="closePreviewModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="previewBody"></div>
+      </div>
+    </div>
+  </div>
+
 <script>
 // ===== CONFIG =====
 const SHEETDB_CONFIG = {
@@ -1330,6 +1402,7 @@ async function loadDataFromSheets() {
         bankSource: row.bankSource || '',
         accountName: row.accountName || '',
         fileUrl: row.fileUrl || '',
+        fileData: row.fileData || '',  // Base64 data URL
         status: row.status || 'PENDING',
         uploadedAt: row.uploadedAt || '',
         approvedAt: row.approvedAt || '',
@@ -1515,11 +1588,13 @@ function previewFile() {
 
     const reader = new FileReader();
     reader.onload = function (e) {
+        const base64Data = e.target.result; // format: "data:image/png;base64,iVBORw0KG..."
+        
         selectedFileData = {
             name: file.name,
             type: file.type,
             size: file.size,
-            data: e.target.result
+            data: base64Data  // Base64 data URL
         };
 
         const chip = `
@@ -1532,7 +1607,7 @@ function previewFile() {
             </div>`;
 
         if (file.type.startsWith('image/')) {
-            preview.innerHTML = chip + `<img src="${e.target.result}" class="preview-image" alt="Pratinjau bukti transfer" style="margin-top:12px;">`;
+            preview.innerHTML = chip + `<img src="${base64Data}" class="preview-image" alt="Pratinjau bukti transfer" style="margin-top:12px;">`;
         } else {
             preview.innerHTML = chip;
         }
@@ -1619,6 +1694,7 @@ async function submitUpload() {
         bankSource: bank,
         accountName: currentUser.name,
         fileUrl: selectedFileData.name,
+        fileData: selectedFileData.data,  // Base64 data URL
         status: 'PENDING',
         uploadedAt: new Date().toISOString(),
         approvedAt: '',
@@ -1633,6 +1709,20 @@ async function submitUpload() {
 
     if (success) {
         appData.savings.push(savingData);
+        
+        // Hitung total saldo jamaah
+        const memberSavings = appData.savings.filter(s => s.memberId === currentUser.id && s.status === 'APPROVED');
+        const totalSaldo = memberSavings.reduce((sum, s) => sum + s.amount, 0);
+
+        // Kirim notifikasi WhatsApp
+        const member = appData.members.find(m => m.id === currentUser.id);
+        if (member) {
+            const waOk = await sendNotificationUpload(member, amount, totalSaldo);
+            if (!waOk) {
+                showAlert(`Bukti dikirim, tapi notifikasi WhatsApp gagal (${member.phone || 'no phone'})`, 'warning');
+            }
+        }
+
         showAlert(`Bukti transfer Rp ${amount.toLocaleString('id-ID')} berhasil dikirim untuk verifikasi`, 'success');
         resetUploadForm();
         updateDashboard();
@@ -1664,12 +1754,16 @@ function loadVerifyData() {
     pending.forEach(saving => {
         const d = new Date(saving.transferDate);
         const row = pendingBody.insertRow();
+        const buktiBtn = saving.fileData
+            ? `<button class="file-thumb-btn" onclick="showPreview(${saving.id})">📋 Lihat Bukti</button>`
+            : '<small style="color:var(--brick);">Tidak ada file</small>';
+        
         row.innerHTML = `
             <td>${!isNaN(d) ? d.toLocaleDateString('id-ID') : saving.transferDate}</td>
             <td>${saving.accountName}</td>
             <td>Rp ${saving.amount.toLocaleString('id-ID')}</td>
             <td>${saving.bankSource}</td>
-            <td><small>${saving.fileUrl || '—'}</small>${saving.notes ? `<br><small style="color:var(--ink-faint);">${saving.notes}</small>` : ''}</td>
+            <td>${buktiBtn}${saving.notes ? `<br><small style="color:var(--ink-faint);">${saving.notes}</small>` : ''}</td>
             <td style="white-space:nowrap;">
                 <button class="btn btn-success btn-small" onclick="approveSavings(${saving.id})">Setujui</button>
                 <button class="btn btn-danger btn-small" onclick="rejectSavings(${saving.id})">Tolak</button>
@@ -1739,6 +1833,19 @@ async function processVerification(saving, action, reason) {
     };
     const logged = await appendSheetDB('Verifications', verification);
     if (logged) appData.verifications.push(verification);
+
+    // Kirim notifikasi WhatsApp ke jamaah
+    const member = appData.members.find(m => m.id === saving.memberId);
+    if (member) {
+        if (action === 'APPROVED') {
+            // Hitung total saldo setelah di-approve
+            const memberSavings = appData.savings.filter(s => s.memberId === member.id && s.status === 'APPROVED');
+            const totalSaldo = memberSavings.reduce((sum, s) => sum + s.amount, 0) + saving.amount;
+            await sendNotificationApproved(member, saving.amount, totalSaldo);
+        } else if (action === 'REJECTED') {
+            await sendNotificationRejected(member, saving.amount, reason);
+        }
+    }
 
     showAlert(
         action === 'APPROVED'
@@ -1850,7 +1957,115 @@ function updateDashboard() {
     }
 }
 
-// ===== BROADCAST: TEMPLATES =====
+// ===== WHATSAPP NOTIFICATIONS =====
+async function sendNotificationUpload(member, amount, totalSaldo) {
+    if (!member.phone) {
+        console.warn(`Member ${member.name} tidak punya nomor WhatsApp`);
+        return false;
+    }
+
+    const message = `Assalamu'alaikum ${member.name}! 👋
+
+Terima kasih telah mengunggah bukti transfer Qurban sebesar Rp ${amount.toLocaleString('id-ID')}.
+
+📊 Status: MENUNGGU VERIFIKASI ADMIN
+💰 Total Saldo Anda: Rp ${totalSaldo.toLocaleString('id-ID')}
+⏱️ Proses verifikasi: 1-2 jam kerja
+
+Kami akan notifikasi Anda saat sudah di-review.
+
+Barakallahu fiik! 🤲
+
+Admin Masjid Dhafinul Jariyah`;
+
+    return await sendFontneMessage(member.phone, message);
+}
+
+async function sendNotificationApproved(member, amount, totalSaldo) {
+    if (!member.phone) return false;
+
+    const message = `Alhamdulillah, ${member.name}! 🎉
+
+Tabungan Qurban Anda sebesar Rp ${amount.toLocaleString('id-ID')} telah DISETUJUI ✅
+
+📊 Rincian:
+├─ Nominal: Rp ${amount.toLocaleString('id-ID')}
+├─ Total Saldo: Rp ${totalSaldo.toLocaleString('id-ID')}
+└─ Status: DISETUJUI
+
+Terima kasih atas kepercayaan dan ketulusan Anda. Semoga Allah menerima amal kita semua.
+
+Barakallahu fiik! 🤲
+
+Admin Masjid Dhafinul Jariyah`;
+
+    return await sendFontneMessage(member.phone, message);
+}
+
+async function sendNotificationRejected(member, amount, reason) {
+    if (!member.phone) return false;
+
+    const message = `Assalamu'alaikum ${member.name},
+
+Mohon maaf, tabungan Qurban Anda sebesar Rp ${amount.toLocaleString('id-ID')} belum dapat kami verifikasi.
+
+❌ Alasan: ${reason}
+
+📝 Silakan upload ulang bukti transfer yang lebih jelas melalui aplikasi Tabungan Qurban.
+
+Terima kasih atas pengertian dan kesabaran Anda.
+
+Admin Masjid Dhafinul Jariyah`;
+
+    return await sendFontneMessage(member.phone, message);
+}
+
+// ===== PREVIEW BUKTI TRANSFER =====
+function showPreview(savingsId) {
+    const saving = appData.savings.find(s => s.id === savingsId);
+    if (!saving) return;
+
+    const modal = document.getElementById('previewModal');
+    const title = document.getElementById('previewTitle');
+    const body = document.getElementById('previewBody');
+
+    title.textContent = `Bukti Transfer - ${saving.accountName} (Rp ${saving.amount.toLocaleString('id-ID')})`;
+
+    if (!saving.fileData) {
+        body.innerHTML = '<div class="preview-pdf"><p>📄 Tidak ada bukti file tersimpan</p></div>';
+        modal.classList.add('show');
+        return;
+    }
+
+    const isPdf = saving.fileData.includes('application/pdf');
+    const isImage = saving.fileData.includes('image/');
+
+    if (isImage) {
+        body.innerHTML = `<img src="${saving.fileData}" class="preview-full-image" alt="Bukti transfer">`;
+    } else if (isPdf) {
+        body.innerHTML = `
+            <div class="preview-pdf">
+              <p>📄 File PDF</p>
+              <p style="font-size:12px; color:var(--ink-faint);">${saving.fileUrl}</p>
+              <p style="font-size:12px; margin-top:10px;">Preview PDF tidak didukung dalam browser. Admin bisa download dari Google Sheets.</p>
+            </div>`;
+    } else {
+        body.innerHTML = `<div class="preview-pdf"><p>❓ Tipe file tidak dikenali</p></div>`;
+    }
+
+    modal.classList.add('show');
+}
+
+function closePreviewModal() {
+    const modal = document.getElementById('previewModal');
+    modal.classList.remove('show');
+}
+
+// Tutup modal saat klik overlay
+document.addEventListener('click', e => {
+    const modal = document.getElementById('previewModal');
+    if (e.target === modal) modal.classList.remove('show');
+});
 const MESSAGE_TEMPLATES = {
     upload_ack: {
         title: 'Konfirmasi Upload Bukti',
