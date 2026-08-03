@@ -546,6 +546,82 @@
   .badge.approved{ background: var(--sage-tint); color:#1E4A3B; }
   .badge.rejected{ background: var(--brick-tint); color:#7A2E1C; }
 
+  .badge.scheduled{ background: var(--emerald-tint); color: var(--emerald); }
+  .badge.sent{ background: var(--sage-tint); color:#1E4A3B; }
+  .badge.draft{ background: var(--sand); color: var(--ink-soft); }
+
+  /* SUB TABS */
+  .sub-tabs{
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+    padding:6px;
+    background: var(--sand);
+    border:1px solid var(--border-soft);
+    border-radius: var(--radius-md);
+    margin-bottom:26px;
+  }
+  .sub-tab-btn{
+    flex:1;
+    min-width:130px;
+    padding:10px 14px;
+    border:none;
+    border-radius: var(--radius-sm);
+    background:transparent;
+    color: var(--ink-soft);
+    font-family: var(--font-body);
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    transition: background .15s ease, color .15s ease;
+  }
+  .sub-tab-btn:hover{ color: var(--emerald); }
+  .sub-tab-btn.active{
+    background: var(--surface);
+    color: var(--emerald);
+    box-shadow: var(--shadow-sm);
+  }
+  .sub-tab-content{ animation: fadeUp .3s ease; }
+
+  .message-preview{
+    background: #075E54;
+    background-image: radial-gradient(rgba(255,255,255,.05) 1px, transparent 1.6px);
+    background-size: 22px 22px;
+    padding:18px;
+    border-radius: var(--radius-md);
+    min-height:110px;
+  }
+  .message-preview .bubble{
+    background:#DCF8C6;
+    color:#0B2F26;
+    padding:12px 14px;
+    border-radius: 10px 10px 10px 2px;
+    font-size:13.5px;
+    line-height:1.62;
+    white-space:pre-wrap;
+    word-break:break-word;
+    max-width:88%;
+    box-shadow: 0 1px 2px rgba(0,0,0,.18);
+  }
+  .message-preview .placeholder{ color: rgba(255,255,255,.55); font-size:13px; }
+
+  .var-chips{ display:flex; flex-wrap:wrap; gap:6px; margin-top:9px; }
+  .var-chip{
+    font-family: var(--font-mono);
+    font-size:11px;
+    padding:3px 9px;
+    border-radius:20px;
+    background: var(--gold-tint);
+    color:#7A5A16;
+    border:1px solid var(--border);
+    cursor:pointer;
+    transition: background .15s ease;
+  }
+  .var-chip:hover{ background: var(--gold-soft); }
+
+  .btn-danger{ background: var(--brick-tint); color:#7A2E1C; }
+  .btn-danger:hover{ background:#EFD5CC; }
+
   .info-box{
     background: var(--emerald-tint);
     border-left: 3px solid var(--emerald-2);
@@ -800,33 +876,146 @@
 
       <!-- Tab: Broadcast WhatsApp (Admin) -->
       <div id="broadcast" class="tab-content">
-        <div class="card" style="max-width:600px;">
-          <h2>📢 Broadcast WhatsApp</h2>
+        <div class="card">
+          <h2>Broadcast WhatsApp</h2>
 
-          <div class="form-group">
-            <label>Kirim ke:</label>
-            <select id="broadcastRecipients">
-              <option value="all">Semua Anggota</option>
-              <option value="pending">Anggota dengan Transaksi Pending</option>
-            </select>
+          <div class="sub-tabs">
+            <button class="sub-tab-btn active" onclick="switchBroadcastTab('sendNow', this)">Kirim Sekarang</button>
+            <button class="sub-tab-btn" onclick="switchBroadcastTab('schedule', this)">Jadwalkan</button>
+            <button class="sub-tab-btn" onclick="switchBroadcastTab('templates', this)">Template</button>
+            <button class="sub-tab-btn" onclick="switchBroadcastTab('history', this)">Riwayat</button>
           </div>
 
-          <div class="form-group">
-            <label>Judul Pesan</label>
-            <input type="text" id="broadcastTitle" placeholder="Contoh: Pengumuman Penting">
+          <!-- Sub-tab: Kirim Sekarang -->
+          <div id="sendNowTab" class="sub-tab-content">
+            <h3 style="margin-top:0;">Kirim Pesan Sekarang</h3>
+
+            <div class="form-group">
+              <label>Penerima</label>
+              <select id="broadcastRecipients" onchange="updateRecipientCount()">
+                <option value="ALL">Semua Anggota</option>
+                <option value="APPROVED">Anggota dengan Tabungan Disetujui</option>
+                <option value="PENDING">Anggota dengan Tabungan Menunggu</option>
+                <option value="NO_UPLOAD">Belum Upload Apapun</option>
+              </select>
+              <small id="recipientCount" style="display:block; margin-top:7px;">—</small>
+            </div>
+
+            <div class="form-group">
+              <label>Pilih Template atau Tulis Manual</label>
+              <select id="broadcastTemplate" onchange="loadTemplate()">
+                <option value="">— Tulis Manual —</option>
+                <option value="upload_ack">Konfirmasi Upload Bukti</option>
+                <option value="approval">Notifikasi Disetujui</option>
+                <option value="rejection">Notifikasi Ditolak</option>
+                <option value="reminder">Pengingat Bulanan</option>
+                <option value="recap">Rekap Bulanan</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Judul / Subjek</label>
+              <input type="text" id="broadcastTitle" placeholder="Contoh: Pengingat Bulanan">
+            </div>
+
+            <div class="form-group">
+              <label>Pesan</label>
+              <textarea id="broadcastMessage" rows="8" oninput="updateMessagePreview()" placeholder="Assalamu'alaikum {NAMA}! …"></textarea>
+              <div class="var-chips">
+                <span class="var-chip" onclick="insertVariable('{NAMA}')">{NAMA}</span>
+                <span class="var-chip" onclick="insertVariable('{SALDO}')">{SALDO}</span>
+                <span class="var-chip" onclick="insertVariable('{NOMINAL}')">{NOMINAL}</span>
+                <span class="var-chip" onclick="insertVariable('{TOTAL}')">{TOTAL}</span>
+                <span class="var-chip" onclick="insertVariable('{PESERTA}')">{PESERTA}</span>
+                <span class="var-chip" onclick="insertVariable('{PROGRESS}')">{PROGRESS}</span>
+                <span class="var-chip" onclick="insertVariable('{TANGGAL}')">{TANGGAL}</span>
+              </div>
+            </div>
+
+            <h3>Pratinjau Pesan</h3>
+            <div class="message-preview" id="messagePreview">
+              <div class="placeholder">Pratinjau akan muncul di sini…</div>
+            </div>
+
+            <div class="actions" style="margin-top:22px;">
+              <button class="btn btn-success" onclick="sendBroadcastNow()">Kirim Sekarang</button>
+              <button class="btn btn-ghost" onclick="clearBroadcastForm()">Bersihkan</button>
+            </div>
+
+            <div class="info-box">
+              <strong>Informasi</strong>
+              Pesan dikirim satu per satu ke WhatsApp penerima via Fonnte, dengan jeda singkat antar pengiriman agar tidak kena rate limit. Riwayat tersimpan otomatis di tab Pesan.
+            </div>
           </div>
 
-          <div class="form-group">
-            <label>Pesan</label>
-            <textarea id="broadcastMessage" placeholder="Assalamu'alaikum {NAMA}!&#10;&#10;Ini adalah pesan broadcast Tabungan Qurban..." rows="6"></textarea>
-            <small style="color:var(--ink-faint); margin-top:6px; display:block;">Gunakan {NAMA} untuk variable nama anggota</small>
+          <!-- Sub-tab: Jadwalkan -->
+          <div id="scheduleTab" class="sub-tab-content" style="display:none;">
+            <h3 style="margin-top:0;">Jadwalkan Pesan</h3>
+
+            <div class="form-group">
+              <label>Penerima</label>
+              <select id="scheduleRecipients">
+                <option value="ALL">Semua Anggota</option>
+                <option value="APPROVED">Anggota dengan Tabungan Disetujui</option>
+                <option value="PENDING">Anggota dengan Tabungan Menunggu</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Judul</label>
+              <input type="text" id="scheduleTitle" placeholder="Contoh: Pengingat Bulanan">
+            </div>
+
+            <div class="form-group">
+              <label>Pesan</label>
+              <textarea id="scheduleMessage" rows="6" placeholder="Tulis pesan…"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label>Waktu Pengiriman</label>
+              <input type="datetime-local" id="scheduleTime">
+            </div>
+
+            <button class="btn btn-primary" onclick="saveScheduledMessage()">Simpan Jadwal</button>
+
+            <div class="info-box">
+              <strong>Cara Kerja</strong>
+              Jadwal disimpan ke tab Pesan dengan status SCHEDULED. Pengiriman otomatis memerlukan automation terpisah; untuk sekarang admin bisa membuka jadwal ini lalu mengirim manual saat waktunya tiba.
+            </div>
+
+            <h3>Jadwal Tersimpan</h3>
+            <div class="table-container">
+              <table>
+                <thead><tr><th>Judul</th><th>Jadwal</th><th>Status</th><th>Aksi</th></tr></thead>
+                <tbody id="scheduledMessagesTable"><tr><td colspan="4" class="loading">Memuat…</td></tr></tbody>
+              </table>
+            </div>
           </div>
 
-          <button class="btn btn-success" onclick="sendBroadcastNow()">📤 Kirim Sekarang ke WhatsApp</button>
+          <!-- Sub-tab: Template -->
+          <div id="templatesTab" class="sub-tab-content" style="display:none;">
+            <h3 style="margin-top:0;">Template Pesan</h3>
+            <div class="table-container">
+              <table>
+                <thead><tr><th>Nama</th><th>Cuplikan</th><th>Aksi</th></tr></thead>
+                <tbody id="templatesTable"><tr><td colspan="3" class="loading">Memuat…</td></tr></tbody>
+              </table>
+            </div>
+            <div class="info-box">
+              <strong>Tips</strong>
+              Klik "Gunakan" untuk memuat template ke form Kirim Sekarang. Isi template bisa diedit dulu sebelum dikirim.
+            </div>
+          </div>
 
-          <div class="info-box" style="margin-top:20px;">
-            <strong>ℹ️ Cara Kerja:</strong>
-            Pesan akan dikirim ke semua nomor WhatsApp anggota via Fonnte API. Pastikan nomor WhatsApp sudah terdaftar di database Members.
+          <!-- Sub-tab: Riwayat -->
+          <div id="historyTab" class="sub-tab-content" style="display:none;">
+            <h3 style="margin-top:0;">Riwayat Broadcast</h3>
+            <div class="table-container">
+              <table>
+                <thead><tr><th>Judul</th><th>Penerima</th><th>Status</th><th>Terkirim</th></tr></thead>
+                <tbody id="broadcastHistoryTable"><tr><td colspan="4" class="loading">Memuat…</td></tr></tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -959,8 +1148,23 @@ async function loadDataFromSheets() {
         notes: row.notes || ''
     })).filter(s => s.id);
 
+    // Parse Pesan (broadcast history & schedule)
+    appData.messages = messagesRows.map(row => ({
+        id: parseInt(row.id) || 0,
+        type: row.type || 'BROADCAST',
+        recipients: row.recipients || 'ALL',
+        title: row.title || '',
+        message: row.message || '',
+        scheduledTime: row.scheduledTime || '',
+        status: row.status || '',
+        sentAt: row.sentAt || '',
+        createdBy: row.createdBy || '',
+        notes: row.notes || ''
+    })).filter(m => m.id);
+
     console.log('Members loaded:', appData.members);
     console.log('Savings loaded:', appData.savings);
+    console.log('Messages loaded:', appData.messages);
 }
 
 // ===== LOGIN =====
@@ -1062,6 +1266,10 @@ function switchTab(tabName) {
     if (tabName === 'verify') loadVerifyData();
     if (tabName === 'history') loadHistory();
     if (tabName === 'laporan') loadLaporan();
+    if (tabName === 'broadcast') {
+        updateRecipientCount();
+        loadTemplates();
+    }
 }
 
 // ===== UPLOAD =====
@@ -1239,9 +1447,139 @@ function updateDashboard() {
     }
 }
 
-// ===== BROADCAST WHATSAPP =====
+// ===== BROADCAST: TEMPLATES =====
+const MESSAGE_TEMPLATES = {
+    upload_ack: {
+        title: 'Konfirmasi Upload Bukti',
+        message: "Assalamu'alaikum {NAMA}!\n\nTerima kasih telah mengunggah bukti transfer Qurban sebesar Rp {NOMINAL}.\n\nStatus: MENUNGGU VERIFIKASI ADMIN\nAdmin akan memverifikasi dalam 1-2 jam kerja.\n\nBarakallahu fiik.\n\nAdmin Masjid Dhafinul Jariyah"
+    },
+    approval: {
+        title: 'Notifikasi Disetujui',
+        message: "Alhamdulillah, {NAMA}!\n\nTabungan Qurban Anda sebesar Rp {NOMINAL} telah DISETUJUI.\n\nTotal tabungan Anda: Rp {SALDO}\nProgress: {PROGRESS}%\n\nTerima kasih atas kepercayaannya.\n\nAdmin Masjid Dhafinul Jariyah"
+    },
+    rejection: {
+        title: 'Notifikasi Ditolak',
+        message: "Assalamu'alaikum {NAMA},\n\nMohon maaf, bukti transfer Qurban Anda belum dapat kami verifikasi karena bukti kurang jelas terbaca.\n\nSilakan unggah ulang bukti transfer yang lebih jelas melalui aplikasi.\n\nTerima kasih atas pengertiannya.\n\nAdmin Masjid Dhafinul Jariyah"
+    },
+    reminder: {
+        title: 'Pengingat Bulanan',
+        message: "Assalamu'alaikum {NAMA}!\n\nPengingat: saatnya menabung Qurban bulan ini.\n\nSaldo tabungan Anda saat ini: Rp {SALDO}\n\nSilakan transfer ke rekening DKM, lalu unggah bukti melalui aplikasi.\n\nBarakallahu fiik.\n\nAdmin Masjid Dhafinul Jariyah"
+    },
+    recap: {
+        title: 'Rekap Bulanan',
+        message: "REKAP TABUNGAN QURBAN\n{TANGGAL}\n\nAssalamu'alaikum {NAMA}!\n\nTabungan Anda: Rp {SALDO}\nTotal terkumpul: Rp {TOTAL}\nJumlah peserta: {PESERTA} anggota\nProgress: {PROGRESS}%\n\nJazakumullahu khairan.\n\nAdmin Masjid Dhafinul Jariyah"
+    }
+};
+
+function switchBroadcastTab(tabName, btn) {
+    ['sendNow', 'schedule', 'templates', 'history'].forEach(t => {
+        const el = document.getElementById(t + 'Tab');
+        if (el) el.style.display = 'none';
+    });
+    const target = document.getElementById(tabName + 'Tab');
+    if (target) target.style.display = 'block';
+
+    document.querySelectorAll('#broadcast .sub-tab-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+
+    if (tabName === 'schedule') loadScheduledMessages();
+    if (tabName === 'templates') loadTemplates();
+    if (tabName === 'history') loadBroadcastHistory();
+}
+
+function loadTemplate() {
+    const key = document.getElementById('broadcastTemplate').value;
+    if (!MESSAGE_TEMPLATES[key]) return;
+    document.getElementById('broadcastTitle').value = MESSAGE_TEMPLATES[key].title;
+    document.getElementById('broadcastMessage').value = MESSAGE_TEMPLATES[key].message;
+    updateMessagePreview();
+}
+
+function insertVariable(variable) {
+    const box = document.getElementById('broadcastMessage');
+    const start = box.selectionStart || box.value.length;
+    box.value = box.value.slice(0, start) + variable + box.value.slice(box.selectionEnd || start);
+    box.focus();
+    box.selectionStart = box.selectionEnd = start + variable.length;
+    updateMessagePreview();
+}
+
+function fillVariables(text, member) {
+    const approved = appData.savings.filter(s => s.status === 'APPROVED');
+    const total = approved.reduce((sum, s) => sum + s.amount, 0);
+    const peserta = new Set(approved.map(s => s.memberId)).size;
+    const saldo = member
+        ? approved.filter(s => s.memberId === member.id).reduce((sum, s) => sum + s.amount, 0)
+        : 0;
+    const lastAmount = member
+        ? (appData.savings.filter(s => s.memberId === member.id).slice(-1)[0]?.amount || 0)
+        : 0;
+    const target = 3000000;
+    const progress = target > 0 ? Math.min(100, Math.round((saldo / target) * 100)) : 0;
+
+    return text
+        .replace(/\{NAMA\}/g, member ? member.name : 'Nama Anggota')
+        .replace(/\{SALDO\}/g, saldo.toLocaleString('id-ID'))
+        .replace(/\{NOMINAL\}/g, lastAmount.toLocaleString('id-ID'))
+        .replace(/\{TOTAL\}/g, total.toLocaleString('id-ID'))
+        .replace(/\{PESERTA\}/g, peserta)
+        .replace(/\{PROGRESS\}/g, progress)
+        .replace(/\{TANGGAL\}/g, new Date().toLocaleDateString('id-ID'));
+}
+
+function updateMessagePreview() {
+    const raw = document.getElementById('broadcastMessage').value;
+    const box = document.getElementById('messagePreview');
+    if (!raw.trim()) {
+        box.innerHTML = '<div class="placeholder">Pratinjau akan muncul di sini…</div>';
+        return;
+    }
+    const sample = getRecipientList(document.getElementById('broadcastRecipients').value)[0] || appData.members[0];
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    bubble.textContent = fillVariables(raw, sample);
+    box.innerHTML = '';
+    box.appendChild(bubble);
+}
+
+function getRecipientList(mode) {
+    const idsWithStatus = status => new Set(
+        appData.savings.filter(s => s.status === status).map(s => s.memberId)
+    );
+
+    if (mode === 'APPROVED') {
+        const ids = idsWithStatus('APPROVED');
+        return appData.members.filter(m => ids.has(m.id));
+    }
+    if (mode === 'PENDING') {
+        const ids = idsWithStatus('PENDING');
+        return appData.members.filter(m => ids.has(m.id));
+    }
+    if (mode === 'NO_UPLOAD') {
+        const ids = new Set(appData.savings.map(s => s.memberId));
+        return appData.members.filter(m => !ids.has(m.id));
+    }
+    return appData.members.slice();
+}
+
+function updateRecipientCount() {
+    const mode = document.getElementById('broadcastRecipients').value;
+    const list = getRecipientList(mode);
+    const withPhone = list.filter(m => m.phone).length;
+    document.getElementById('recipientCount').textContent =
+        `${list.length} anggota terpilih · ${withPhone} punya nomor WhatsApp`;
+    updateMessagePreview();
+}
+
+function clearBroadcastForm() {
+    document.getElementById('broadcastTitle').value = '';
+    document.getElementById('broadcastMessage').value = '';
+    document.getElementById('broadcastTemplate').value = '';
+    updateMessagePreview();
+}
+
 async function sendBroadcastNow() {
-    const recipients = document.getElementById('broadcastRecipients').value;
+    const mode = document.getElementById('broadcastRecipients').value;
     const title = document.getElementById('broadcastTitle').value.trim();
     const message = document.getElementById('broadcastMessage').value.trim();
 
@@ -1250,49 +1588,196 @@ async function sendBroadcastNow() {
         return;
     }
 
-    // Get recipients
-    let targetMembers = [];
-    if (recipients === 'all') {
-        targetMembers = appData.members;
-    } else if (recipients === 'pending') {
-        const pendingMembers = appData.savings
-            .filter(s => s.status === 'PENDING')
-            .map(s => s.memberId);
-        targetMembers = appData.members.filter(m => pendingMembers.includes(m.id));
-    }
-
-    if (targetMembers.length === 0) {
-        showAlert('Tidak ada penerima pesan', 'warning');
+    const targets = getRecipientList(mode).filter(m => m.phone);
+    if (targets.length === 0) {
+        showAlert('Tidak ada penerima dengan nomor WhatsApp', 'warning');
         return;
     }
 
-    showAlert(`Mengirim ke ${targetMembers.length} anggota...`, 'info');
+    if (!confirm(`Kirim pesan "${title}" ke ${targets.length} anggota?`)) return;
 
-    let successCount = 0;
-    let failCount = 0;
+    showAlert(`Mengirim ke ${targets.length} anggota…`, 'info');
 
-    // Send to each member
-    for (const member of targetMembers) {
-        if (!member.phone) continue;
-
-        const personalizedMsg = message.replace('{NAMA}', member.name);
-        const success = await sendFontneMessage(member.phone, personalizedMsg);
-        
-        if (success) {
-            successCount++;
-        } else {
-            failCount++;
-        }
-
-        // Delay to avoid rate limit
-        await new Promise(resolve => setTimeout(resolve, 500));
+    let sent = 0, failed = 0;
+    for (const member of targets) {
+        const ok = await sendFonnteMessage(member.phone, fillVariables(message, member));
+        ok ? sent++ : failed++;
+        await new Promise(r => setTimeout(r, 600));
     }
 
-    showAlert(`Selesai! ${successCount} terkirim, ${failCount} gagal`, 'success');
-    
-    // Clear form
-    document.getElementById('broadcastTitle').value = '';
-    document.getElementById('broadcastMessage').value = '';
+    await appendSheetDB('Pesan', {
+        id: nextMessageId(),
+        type: 'BROADCAST',
+        recipients: mode,
+        title: title,
+        message: message,
+        scheduledTime: 'IMMEDIATE',
+        status: sent > 0 ? 'SENT' : 'FAILED',
+        sentAt: new Date().toISOString(),
+        createdBy: currentUser.name,
+        notes: `${sent} terkirim, ${failed} gagal`
+    });
+
+    if (failed === 0) {
+        showAlert(`Selesai. ${sent} pesan terkirim.`, 'success');
+    } else if (sent === 0) {
+        showAlert(`Semua pengiriman gagal (${failed}). Cek koneksi Fonnte.`, 'error');
+    } else {
+        showAlert(`${sent} terkirim, ${failed} gagal.`, 'warning');
+    }
+
+    clearBroadcastForm();
+}
+
+async function sendFonnteMessage(phoneNumber, message) {
+    try {
+        const body = new FormData();
+        body.append('target', String(phoneNumber).trim());
+        body.append('message', message);
+
+        const response = await fetch('https://api.fonnte.com/send', {
+            method: 'POST',
+            headers: { 'Authorization': FONNTE_CONFIG.API_KEY },
+            body: body
+        });
+
+        if (!response.ok) {
+            console.error('Fonnte HTTP error', phoneNumber, response.status);
+            return false;
+        }
+        const result = await response.json().catch(() => null);
+        if (result && result.status === false) {
+            console.error('Fonnte rejected', phoneNumber, result);
+            return false;
+        }
+        return true;
+    } catch (error) {
+        console.error('Fonnte request failed for', phoneNumber, error);
+        return false;
+    }
+}
+
+function nextMessageId() {
+    return appData.messages.length > 0
+        ? Math.max(...appData.messages.map(m => parseInt(m.id) || 0)) + 1
+        : 1;
+}
+
+// ===== BROADCAST: SCHEDULE =====
+async function saveScheduledMessage() {
+    const recipients = document.getElementById('scheduleRecipients').value;
+    const title = document.getElementById('scheduleTitle').value.trim();
+    const message = document.getElementById('scheduleMessage').value.trim();
+    const scheduledTime = document.getElementById('scheduleTime').value;
+
+    if (!title || !message || !scheduledTime) {
+        showAlert('Judul, pesan, dan waktu harus diisi', 'error');
+        return;
+    }
+
+    const record = {
+        id: nextMessageId(),
+        type: 'BROADCAST',
+        recipients: recipients,
+        title: title,
+        message: message,
+        scheduledTime: scheduledTime,
+        status: 'SCHEDULED',
+        sentAt: '',
+        createdBy: currentUser.name,
+        notes: 'Dijadwalkan via admin'
+    };
+
+    const ok = await appendSheetDB('Pesan', record);
+    if (!ok) return;
+
+    appData.messages.push(record);
+    showAlert('Jadwal tersimpan di tab Pesan', 'success');
+    document.getElementById('scheduleTitle').value = '';
+    document.getElementById('scheduleMessage').value = '';
+    document.getElementById('scheduleTime').value = '';
+    loadScheduledMessages();
+}
+
+function loadScheduledMessages() {
+    const tbody = document.getElementById('scheduledMessagesTable');
+    const scheduled = appData.messages.filter(m => m.status === 'SCHEDULED');
+    tbody.innerHTML = '';
+
+    if (scheduled.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="loading">Belum ada jadwal tersimpan</td></tr>';
+        return;
+    }
+
+    scheduled.forEach(msg => {
+        const when = msg.scheduledTime ? new Date(msg.scheduledTime) : null;
+        const row = tbody.insertRow();
+        row.innerHTML = `
+            <td>${msg.title}</td>
+            <td>${when && !isNaN(when) ? when.toLocaleString('id-ID') : msg.scheduledTime}</td>
+            <td><span class="badge scheduled">SCHEDULED</span></td>
+            <td><button class="btn btn-ghost btn-small" onclick="useScheduled(${msg.id})">Kirim</button></td>
+        `;
+    });
+}
+
+function useScheduled(id) {
+    const msg = appData.messages.find(m => parseInt(m.id) === parseInt(id));
+    if (!msg) return;
+    document.getElementById('broadcastRecipients').value = msg.recipients || 'ALL';
+    document.getElementById('broadcastTitle').value = msg.title;
+    document.getElementById('broadcastMessage').value = msg.message;
+    switchBroadcastTab('sendNow', document.querySelector('#broadcast .sub-tab-btn'));
+    updateRecipientCount();
+    showAlert('Jadwal dimuat ke form. Periksa lalu kirim.', 'info');
+}
+
+// ===== BROADCAST: TEMPLATES TABLE =====
+function loadTemplates() {
+    const tbody = document.getElementById('templatesTable');
+    tbody.innerHTML = '';
+
+    Object.entries(MESSAGE_TEMPLATES).forEach(([key, tpl]) => {
+        const row = tbody.insertRow();
+        row.innerHTML = `
+            <td>${tpl.title}</td>
+            <td>${tpl.message.replace(/\n/g, ' ').substring(0, 60)}…</td>
+            <td><button class="btn btn-ghost btn-small" onclick="useTemplate('${key}')">Gunakan</button></td>
+        `;
+    });
+}
+
+function useTemplate(key) {
+    const tpl = MESSAGE_TEMPLATES[key];
+    if (!tpl) return;
+    document.getElementById('broadcastTemplate').value = key;
+    document.getElementById('broadcastTitle').value = tpl.title;
+    document.getElementById('broadcastMessage').value = tpl.message;
+    switchBroadcastTab('sendNow', document.querySelector('#broadcast .sub-tab-btn'));
+    updateMessagePreview();
+}
+
+// ===== BROADCAST: HISTORY =====
+function loadBroadcastHistory() {
+    const tbody = document.getElementById('broadcastHistoryTable');
+    const sent = appData.messages.filter(m => m.status === 'SENT' || m.status === 'FAILED');
+    tbody.innerHTML = '';
+
+    if (sent.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="loading">Belum ada broadcast terkirim</td></tr>';
+        return;
+    }
+
+    sent.slice().reverse().forEach(msg => {
+        const when = msg.sentAt ? new Date(msg.sentAt) : null;
+        const row = tbody.insertRow();
+        row.innerHTML = `
+            <td>${msg.title}</td>
+            <td>${msg.recipients}</td>
+            <td><span class="badge ${msg.status === 'SENT' ? 'sent' : 'rejected'}">${msg.status}</span></td>
+            <td>${when && !isNaN(when) ? when.toLocaleString('id-ID') : '-'}</td>
+        `;
+    });
 }
 
 async function sendFontneMessage(phoneNumber, message) {
