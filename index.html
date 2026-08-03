@@ -677,6 +677,10 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg>
         Verifikasi
       </button>
+      <button class="tab-btn" id="broadcastTabBtn" onclick="switchTab('broadcast')" style="display:none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+        Broadcast WA
+      </button>
       <button class="tab-btn" onclick="switchTab('history')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3.5 2"/></svg>
         Riwayat
@@ -794,6 +798,39 @@
         </div>
       </div>
 
+      <!-- Tab: Broadcast WhatsApp (Admin) -->
+      <div id="broadcast" class="tab-content">
+        <div class="card" style="max-width:600px;">
+          <h2>📢 Broadcast WhatsApp</h2>
+
+          <div class="form-group">
+            <label>Kirim ke:</label>
+            <select id="broadcastRecipients">
+              <option value="all">Semua Anggota</option>
+              <option value="pending">Anggota dengan Transaksi Pending</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Judul Pesan</label>
+            <input type="text" id="broadcastTitle" placeholder="Contoh: Pengumuman Penting">
+          </div>
+
+          <div class="form-group">
+            <label>Pesan</label>
+            <textarea id="broadcastMessage" placeholder="Assalamu'alaikum {NAMA}!&#10;&#10;Ini adalah pesan broadcast Tabungan Qurban..." rows="6"></textarea>
+            <small style="color:var(--ink-faint); margin-top:6px; display:block;">Gunakan {NAMA} untuk variable nama anggota</small>
+          </div>
+
+          <button class="btn btn-success" onclick="sendBroadcastNow()">📤 Kirim Sekarang ke WhatsApp</button>
+
+          <div class="info-box" style="margin-top:20px;">
+            <strong>ℹ️ Cara Kerja:</strong>
+            Pesan akan dikirim ke semua nomor WhatsApp anggota via Fonnte API. Pastikan nomor WhatsApp sudah terdaftar di database Members.
+          </div>
+        </div>
+      </div>
+
       <!-- Tab: Riwayat -->
       <div id="history" class="tab-content">
         <div class="card">
@@ -842,6 +879,10 @@
 // ===== CONFIG =====
 const SHEETDB_CONFIG = {
     ENDPOINT: 'https://sheetdb.io/api/v1/6ipqgxsr2smql'
+};
+
+const FONNTE_CONFIG = {
+    API_KEY: 'ke8k4Py9BD3wyKhxFqRd'
 };
 
 // ===== STATE =====
@@ -974,10 +1015,13 @@ function showApp() {
     document.getElementById('avatarInitial').textContent = currentUser.name.charAt(0).toUpperCase();
 
     const verifyTabBtn = document.getElementById('verifyTabBtn');
+    const broadcastTabBtn = document.getElementById('broadcastTabBtn');
     if (currentUser.role === 'admin') {
         verifyTabBtn.style.display = 'flex';
+        broadcastTabBtn.style.display = 'flex';
     } else {
         verifyTabBtn.style.display = 'none';
+        broadcastTabBtn.style.display = 'none';
     }
 
     updateDashboard();
@@ -993,6 +1037,7 @@ const TAB_META = {
     dashboard: { title: 'Dashboard', crumb: 'Ringkasan' },
     upload: { title: 'Upload Bukti', crumb: 'Tabungan' },
     verify: { title: 'Verifikasi Tabungan', crumb: 'Admin' },
+    broadcast: { title: 'Broadcast WhatsApp', crumb: 'Admin' },
     history: { title: 'Riwayat', crumb: 'Tabungan' },
     laporan: { title: 'Laporan', crumb: 'Ringkasan' }
 };
@@ -1194,8 +1239,88 @@ function updateDashboard() {
     }
 }
 
-// ===== EXPORT =====
-function exportCSV() {
+// ===== BROADCAST WHATSAPP =====
+async function sendBroadcastNow() {
+    const recipients = document.getElementById('broadcastRecipients').value;
+    const title = document.getElementById('broadcastTitle').value.trim();
+    const message = document.getElementById('broadcastMessage').value.trim();
+
+    if (!title || !message) {
+        showAlert('Judul dan pesan harus diisi', 'error');
+        return;
+    }
+
+    // Get recipients
+    let targetMembers = [];
+    if (recipients === 'all') {
+        targetMembers = appData.members;
+    } else if (recipients === 'pending') {
+        const pendingMembers = appData.savings
+            .filter(s => s.status === 'PENDING')
+            .map(s => s.memberId);
+        targetMembers = appData.members.filter(m => pendingMembers.includes(m.id));
+    }
+
+    if (targetMembers.length === 0) {
+        showAlert('Tidak ada penerima pesan', 'warning');
+        return;
+    }
+
+    showAlert(`Mengirim ke ${targetMembers.length} anggota...`, 'info');
+
+    let successCount = 0;
+    let failCount = 0;
+
+    // Send to each member
+    for (const member of targetMembers) {
+        if (!member.phone) continue;
+
+        const personalizedMsg = message.replace('{NAMA}', member.name);
+        const success = await sendFontneMessage(member.phone, personalizedMsg);
+        
+        if (success) {
+            successCount++;
+        } else {
+            failCount++;
+        }
+
+        // Delay to avoid rate limit
+        await new Promise(resolve => setTimeout(resolve, 500));
+    }
+
+    showAlert(`Selesai! ${successCount} terkirim, ${failCount} gagal`, 'success');
+    
+    // Clear form
+    document.getElementById('broadcastTitle').value = '';
+    document.getElementById('broadcastMessage').value = '';
+}
+
+async function sendFontneMessage(phoneNumber, message) {
+    try {
+        const url = 'https://api.fonnte.com/send';
+        const formData = new FormData();
+        formData.append('target', phoneNumber);
+        formData.append('message', message);
+
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Authorization': FONNTE_CONFIG.API_KEY
+            },
+            body: formData
+        });
+
+        if (!response.ok) {
+            console.error(`Fonnte error for ${phoneNumber}:`, response.status);
+            return false;
+        }
+
+        return true;
+    } catch (error) {
+        console.error(`Error sending to ${phoneNumber}:`, error);
+        return false;
+    }
+}
     const approved = appData.savings.filter(s => s.status === 'APPROVED');
     let csv = 'Laporan Tabungan Qurban\n' + new Date().toLocaleDateString('id-ID') + '\n\n';
     csv += 'Tanggal,Nama,Nominal,Bank\n';
