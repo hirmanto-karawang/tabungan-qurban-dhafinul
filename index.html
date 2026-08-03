@@ -1053,7 +1053,7 @@
                 <path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v3a2 2 0 002 2h12a2 2 0 002-2v-3"/>
               </svg>
               <div class="drop-title">Klik atau tarik file ke sini</div>
-              <div class="drop-hint">PNG, JPG, atau PDF · maksimal 5 MB</div>
+              <div class="drop-hint">PNG, JPG, atau PDF · maksimal 1 MB</div>
             </div>
             <div class="file-preview" id="filePreview"></div>
             <span class="field-error" id="fileError"></span>
@@ -1561,6 +1561,39 @@ function updateAmountHint() {
     hint.style.color = 'var(--emerald-2)';
 }
 
+function compressImage(base64Data, callback, maxWidth = 800, maxHeight = 800, quality = 0.8) {
+    const img = new Image();
+    img.onload = function () {
+        let width = img.width;
+        let height = img.height;
+
+        // Hitung resize ratio
+        if (width > height) {
+            if (width > maxWidth) {
+                height = Math.round((height * maxWidth) / width);
+                width = maxWidth;
+            }
+        } else {
+            if (height > maxHeight) {
+                width = Math.round((width * maxHeight) / height);
+                height = maxHeight;
+            }
+        }
+
+        // Draw ke canvas
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // Convert ke JPEG quality rendah untuk ukuran lebih kecil
+        const compressed = canvas.toDataURL('image/jpeg', quality);
+        callback(compressed);
+    };
+    img.src = base64Data;
+}
+
 function previewFile() {
     const input = document.getElementById('uploadFile');
     const file = input.files[0];
@@ -1573,8 +1606,8 @@ function previewFile() {
 
     if (!file) return;
 
-    if (file.size > 5 * 1024 * 1024) {
-        error.textContent = `File terlalu besar (${formatBytes(file.size)}). Maksimal 5 MB.`;
+    if (file.size > 1 * 1024 * 1024) {
+        error.textContent = `File terlalu besar (${formatBytes(file.size)}). Maksimal 1 MB.`;
         input.value = '';
         return;
     }
@@ -1588,27 +1621,47 @@ function previewFile() {
 
     const reader = new FileReader();
     reader.onload = function (e) {
-        const base64Data = e.target.result; // format: "data:image/png;base64,iVBORw0KG..."
+        const base64Data = e.target.result;
         
-        selectedFileData = {
-            name: file.name,
-            type: file.type,
-            size: file.size,
-            data: base64Data  // Base64 data URL
-        };
-
-        const chip = `
-            <div class="file-chip">
-              <div class="meta">
-                <div class="fname">${file.name}</div>
-                <div class="fsize">${formatBytes(file.size)}</div>
-              </div>
-              <button class="file-remove" onclick="removeFile()" title="Hapus file">&times;</button>
-            </div>`;
-
+        // Jika gambar, compress dulu
         if (file.type.startsWith('image/')) {
-            preview.innerHTML = chip + `<img src="${base64Data}" class="preview-image" alt="Pratinjau bukti transfer" style="margin-top:12px;">`;
+            compressImage(base64Data, function(compressedBase64) {
+                selectedFileData = {
+                    name: file.name,
+                    type: 'image/jpeg',  // Ubah ke JPEG setelah compress
+                    size: file.size,
+                    data: compressedBase64  // Compressed Base64
+                };
+
+                const chip = `
+                    <div class="file-chip">
+                      <div class="meta">
+                        <div class="fname">${file.name}</div>
+                        <div class="fsize">${formatBytes(file.size)}</div>
+                      </div>
+                      <button class="file-remove" onclick="removeFile()" title="Hapus file">&times;</button>
+                    </div>`;
+
+                preview.innerHTML = chip + `<img src="${compressedBase64}" class="preview-image" alt="Pratinjau bukti transfer" style="margin-top:12px;">`;
+            });
         } else {
+            // PDF, simpan as-is
+            selectedFileData = {
+                name: file.name,
+                type: file.type,
+                size: file.size,
+                data: base64Data
+            };
+
+            const chip = `
+                <div class="file-chip">
+                  <div class="meta">
+                    <div class="fname">${file.name}</div>
+                    <div class="fsize">${formatBytes(file.size)}</div>
+                  </div>
+                  <button class="file-remove" onclick="removeFile()" title="Hapus file">&times;</button>
+                </div>`;
+
             preview.innerHTML = chip;
         }
     };
