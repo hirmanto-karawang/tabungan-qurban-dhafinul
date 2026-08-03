@@ -941,7 +941,7 @@
 
           <div class="rek-box">
             <div class="rek-label">Rekening Tujuan DKM</div>
-            <div class="rek-row"><span>Bank Muamalat (147)</span><code>3410 020 637</code></div>
+            <div class="rek-row"><span>Bank Muamalat (147)</span><code>341 002 0637</code></div>
             <div class="rek-row"><span>Atas nama</span><span style="color:var(--emerald);font-weight:600;">DKM Dhafinul Jariyah</span></div>
           </div>
 
@@ -1022,12 +1022,19 @@
         <div class="card">
           <h2>Verifikasi Tabungan</h2>
 
-          <h3>Menunggu Verifikasi</h3>
+          <div id="verifySummary" style="margin-bottom:20px; display:flex; gap:8px; flex-wrap:wrap;"></div>
+
+          <h3 style="margin-top:0;">Menunggu Verifikasi</h3>
           <div class="table-container">
             <table>
-              <thead><tr><th>Tanggal</th><th>Nama</th><th>Nominal</th><th>Bank</th><th>Aksi</th></tr></thead>
-              <tbody id="pendingTableBody"><tr><td colspan="5" class="loading">Memuat…</td></tr></tbody>
+              <thead><tr><th>Tanggal</th><th>Nama</th><th>Nominal</th><th>Bank</th><th>Bukti &amp; Catatan</th><th>Aksi</th></tr></thead>
+              <tbody id="pendingTableBody"><tr><td colspan="6" class="loading">Memuat…</td></tr></tbody>
             </table>
+          </div>
+
+          <div class="info-box">
+            <strong>Catatan</strong>
+            Setiap keputusan langsung tersimpan ke tab Savings dan tercatat di tab Verifications sebagai jejak audit. Status hanya berubah di layar setelah Google Sheets berhasil diperbarui.
           </div>
         </div>
       </div>
@@ -1273,6 +1280,30 @@ async function appendSheetDB(tableName, record) {
     }
 }
 
+async function updateSheetDB(tableName, keyColumn, keyValue, updates) {
+    try {
+        const url = `${SHEETDB_CONFIG.ENDPOINT}/${keyColumn}/${encodeURIComponent(keyValue)}?sheet=${tableName}`;
+        const response = await fetch(url, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ data: updates })
+        });
+        if (!response.ok) {
+            console.error(`Update ${tableName} gagal: HTTP ${response.status}`);
+            return false;
+        }
+        const result = await response.json().catch(() => null);
+        if (result && result.updated === 0) {
+            console.error(`Update ${tableName}: tidak ada baris cocok untuk ${keyColumn}=${keyValue}`);
+            return false;
+        }
+        return true;
+    } catch (error) {
+        console.error(`Error updating ${tableName}:`, error);
+        return false;
+    }
+}
+
 // ===== LOAD DATA FROM SHEETDB =====
 async function loadDataFromSheets() {
     const memberRows = await fetchSheetDBTable('Members');
@@ -1305,6 +1336,16 @@ async function loadDataFromSheets() {
         approvedBy: row.approvedBy || '',
         notes: row.notes || ''
     })).filter(s => s.id);
+
+    // Parse Verifications (jejak audit approve/reject)
+    appData.verifications = verificationsRows.map(row => ({
+        id: parseInt(row.id) || 0,
+        savingsId: parseInt(row.savingsId) || 0,
+        adminId: row.adminId || '',
+        action: row.action || '',
+        reason: row.reason || '',
+        timestamp: row.timestamp || ''
+    })).filter(v => v.id);
 
     // Parse Pesan (broadcast history & schedule)
     appData.messages = messagesRows.map(row => ({
@@ -1601,40 +1642,119 @@ async function submitUpload() {
 // ===== VERIFY =====
 function loadVerifyData() {
     const pending = appData.savings.filter(s => s.status === 'PENDING');
+    const approved = appData.savings.filter(s => s.status === 'APPROVED');
+    const rejected = appData.savings.filter(s => s.status === 'REJECTED');
+
+    const badge = document.getElementById('verifySummary');
+    if (badge) {
+        badge.innerHTML =
+            `<span class="badge pending">${pending.length} Menunggu</span> ` +
+            `<span class="badge approved">${approved.length} Disetujui</span> ` +
+            `<span class="badge rejected">${rejected.length} Ditolak</span>`;
+    }
 
     const pendingBody = document.getElementById('pendingTableBody');
     pendingBody.innerHTML = '';
+
     if (pending.length === 0) {
-        pendingBody.innerHTML = '<tr><td colspan="5" class="loading">Tidak ada yang perlu diverifikasi</td></tr>';
-    } else {
-        pending.forEach(saving => {
-            const row = pendingBody.insertRow();
-            row.innerHTML = `
-                <td>${new Date(saving.transferDate).toLocaleDateString('id-ID')}</td>
-                <td>${saving.accountName}</td>
-                <td>Rp ${saving.amount.toLocaleString('id-ID')}</td>
-                <td>${saving.bankSource}</td>
-                <td><button class="btn btn-success btn-small" onclick="approveSavings(${saving.id})">Setujui</button></td>
-            `;
-        });
+        pendingBody.innerHTML = '<tr><td colspan="6" class="loading">Tidak ada yang perlu diverifikasi</td></tr>';
+        return;
     }
+
+    pending.forEach(saving => {
+        const d = new Date(saving.transferDate);
+        const row = pendingBody.insertRow();
+        row.innerHTML = `
+            <td>${!isNaN(d) ? d.toLocaleDateString('id-ID') : saving.transferDate}</td>
+            <td>${saving.accountName}</td>
+            <td>Rp ${saving.amount.toLocaleString('id-ID')}</td>
+            <td>${saving.bankSource}</td>
+            <td><small>${saving.fileUrl || '—'}</small>${saving.notes ? `<br><small style="color:var(--ink-faint);">${saving.notes}</small>` : ''}</td>
+            <td style="white-space:nowrap;">
+                <button class="btn btn-success btn-small" onclick="approveSavings(${saving.id})">Setujui</button>
+                <button class="btn btn-danger btn-small" onclick="rejectSavings(${saving.id})">Tolak</button>
+            </td>
+        `;
+    });
 }
 
 async function approveSavings(savingsId) {
     const saving = appData.savings.find(s => s.id === savingsId);
     if (!saving) return;
 
-    saving.status = 'APPROVED';
-    saving.approvedAt = new Date().toISOString();
+    if (!confirm(`Setujui tabungan ${saving.accountName} sebesar Rp ${saving.amount.toLocaleString('id-ID')}?`)) return;
+
+    await processVerification(saving, 'APPROVED', '');
+}
+
+async function rejectSavings(savingsId) {
+    const saving = appData.savings.find(s => s.id === savingsId);
+    if (!saving) return;
+
+    const reason = prompt(`Alasan penolakan untuk ${saving.accountName} (Rp ${saving.amount.toLocaleString('id-ID')}):`, 'Bukti transfer kurang jelas');
+    if (reason === null) return;
+    if (!reason.trim()) {
+        showAlert('Alasan penolakan harus diisi', 'error');
+        return;
+    }
+
+    await processVerification(saving, 'REJECTED', reason.trim());
+}
+
+async function processVerification(saving, action, reason) {
+    const buttons = document.querySelectorAll('#pendingTableBody button');
+    buttons.forEach(b => b.disabled = true);
+
+    const now = new Date().toISOString();
+
+    const written = await updateSheetDB('Savings', 'id', saving.id, {
+        status: action,
+        approvedAt: now,
+        approvedBy: currentUser.name,
+        notes: action === 'REJECTED'
+            ? (saving.notes ? saving.notes + ' | Ditolak: ' + reason : 'Ditolak: ' + reason)
+            : saving.notes
+    });
+
+    buttons.forEach(b => b.disabled = false);
+
+    if (!written) {
+        showAlert('Gagal menyimpan ke Google Sheets. Status belum berubah — silakan coba lagi.', 'error');
+        return;
+    }
+
+    // Baru ubah data lokal setelah Sheets benar-benar tersimpan
+    saving.status = action;
+    saving.approvedAt = now;
     saving.approvedBy = currentUser.name;
 
-    // Update di Google Sheets (update row)
-    // For simplicity, we'll just update local state
-    // In production, implement updateGoogleSheets function
+    // Catat jejak audit ke tab Verifications
+    const verification = {
+        id: nextVerificationId(),
+        savingsId: saving.id,
+        adminId: currentUser.name,
+        action: action,
+        reason: reason,
+        timestamp: now
+    };
+    const logged = await appendSheetDB('Verifications', verification);
+    if (logged) appData.verifications.push(verification);
 
-    showAlert(`Tabungan ${saving.accountName} disetujui`, 'success');
+    showAlert(
+        action === 'APPROVED'
+            ? `Tabungan ${saving.accountName} disetujui dan tersimpan di Google Sheets`
+            : `Tabungan ${saving.accountName} ditolak dan tercatat di Google Sheets`,
+        action === 'APPROVED' ? 'success' : 'warning'
+    );
+
     loadVerifyData();
     updateDashboard();
+}
+
+function nextVerificationId() {
+    return appData.verifications.length > 0
+        ? Math.max(...appData.verifications.map(v => parseInt(v.id) || 0)) + 1
+        : 1;
 }
 
 // ===== HISTORY =====
