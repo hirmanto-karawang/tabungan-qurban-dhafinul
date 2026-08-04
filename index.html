@@ -344,12 +344,23 @@
     filter: drop-shadow(0 1px 2px rgba(0,0,0,.15));
   }
 
-  .dashboard-logo{
-    width: 56px;
-    height: 56px;
-    object-fit: contain;
-    filter: drop-shadow(0 2px 8px rgba(14,59,52,.12));
+  .dashboard-logo-wrap{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:72px;
+    height:72px;
+    background: var(--surface);
+    border:1px solid var(--border-soft);
+    border-radius: 16px;
+    box-shadow: var(--shadow-sm);
     animation: slideDown 0.6s ease-out;
+  }
+  .dashboard-logo{
+    width: 52px;
+    height: 52px;
+    object-fit: contain;
+    border-radius: 8px;
   }
   @keyframes slideDown {
     from {
@@ -814,6 +825,37 @@
     max-height:280px;
   }
 
+  /* ===== PROFILE FORM ===== */
+  .profile-phone-row{
+    display:flex;
+    gap:8px;
+  }
+  .profile-phone-row input{ flex:1; min-width:0; }
+  .profile-auto-pw-btn{
+    padding:10px 16px;
+    background: var(--gold-tint);
+    border:1px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor:pointer;
+    font-size:13px;
+    font-weight:500;
+    color: var(--ink);
+    white-space:nowrap;
+    flex-shrink:0;
+  }
+  .profile-address-grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap:12px;
+  }
+  .profile-address-grid input{ width:100%; min-width:0; }
+  .profile-actions{
+    display:flex;
+    gap:12px;
+    margin-top:24px;
+  }
+  .profile-actions .btn{ flex:1; }
+
 
   .message-preview{
     background: #075E54;
@@ -1114,7 +1156,8 @@
     .stats-grid{ grid-template-columns: 1fr; }
     .hero-logo-container{ width:100px; height:100px; margin: 0 auto 24px; }
     .hero-logo{ width: 85px; height: 85px; }
-    .dashboard-logo{ width: 48px; height: 48px; }
+    .dashboard-logo-wrap{ width:60px; height:60px; border-radius:14px; }
+    .dashboard-logo{ width: 42px; height: 42px; }
 
     /* LAPORAN MOBILE */
     .report-hero{ padding:22px 18px; border-radius: var(--radius-md); }
@@ -1139,6 +1182,12 @@
     .card h3{ font-size:14.5px; }
     table{ font-size:12.5px; min-width:460px; }
     table th, table td{ padding:9px 11px; }
+
+    /* PROFILE FORM MOBILE */
+    .profile-phone-row{ flex-direction:column; }
+    .profile-auto-pw-btn{ width:100%; }
+    .profile-address-grid{ grid-template-columns: 1fr; gap:14px; }
+    .profile-actions{ flex-direction:column; }
   }
 </style>
 
@@ -1367,7 +1416,9 @@
       <!-- Tab: Dashboard -->
       <div id="dashboard" class="tab-content active">
         <div style="text-align:center;margin-bottom:28px;padding-top:8px;">
-          <img src="logo-masjid.jpg" alt="Masjid Dhafinul Jariyah" class="dashboard-logo">
+          <div class="dashboard-logo-wrap">
+            <img src="logo-masjid.jpg" alt="Masjid Dhafinul Jariyah" class="dashboard-logo">
+          </div>
         </div>
         <div class="card">
           <h2>Ringkasan Tabungan</h2>
@@ -1709,16 +1760,16 @@
 
             <div class="form-row">
               <label>Nomor WhatsApp</label>
-              <div style="display:flex;gap:8px;">
-                <input type="tel" id="profilePhone" placeholder="089xxxxxxxxx" required style="flex:1;">
-                <button type="button" onclick="updatePhonePassword()" style="padding:10px 16px;background:var(--gold-tint);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:13px;font-weight:500;color:var(--ink);">Auto Password</button>
+              <div class="profile-phone-row">
+                <input type="tel" id="profilePhone" placeholder="089xxxxxxxxx" required>
+                <button type="button" onclick="updatePhonePassword()" class="profile-auto-pw-btn">Auto Password</button>
               </div>
-              <small style="color:var(--ink-faint);margin-top:6px;">💡 Password otomatis dari 4 digit terakhir nomor HP</small>
+              <small style="color:var(--ink-faint);margin-top:6px;display:block;">💡 Password otomatis dari 4 digit terakhir nomor HP</small>
             </div>
 
             <div class="form-row">
               <label>Alamat</label>
-              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+              <div class="profile-address-grid">
                 <div>
                   <label style="font-size:12px;color:var(--ink-faint);margin-bottom:6px;display:block;">RT</label>
                   <input type="text" id="profileRT" placeholder="01" required>
@@ -1739,9 +1790,9 @@
               <input type="text" id="profileSapi" readonly style="background:var(--sand);cursor:not-allowed;">
             </div>
 
-            <div style="display:flex;gap:12px;margin-top:24px;">
-              <button type="submit" class="btn btn-primary" style="flex:1;">💾 Simpan Perubahan</button>
-              <button type="button" onclick="resetProfileForm()" class="btn" style="flex:1;background:var(--sand);color:var(--ink);">↻ Batal</button>
+            <div class="profile-actions">
+              <button type="submit" class="btn btn-primary">💾 Simpan Perubahan</button>
+              <button type="button" onclick="resetProfileForm()" class="btn" style="background:var(--sand);color:var(--ink);">↻ Batal</button>
             </div>
 
             <div id="profileMessage" style="margin-top:16px;"></div>
@@ -1770,7 +1821,9 @@
       <!-- Tab: Laporan -->
       <div id="laporan" class="tab-content">
         <div style="text-align:center;margin-bottom:20px;">
-          <img src="logo-masjid.jpg" alt="Masjid Dhafinul Jariyah" class="dashboard-logo">
+          <div class="dashboard-logo-wrap">
+            <img src="logo-masjid.jpg" alt="Masjid Dhafinul Jariyah" class="dashboard-logo">
+          </div>
         </div>
         <div class="report-hero">
           <div class="report-hero-label">Total Tabungan Qurban</div>
