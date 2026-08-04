@@ -3981,13 +3981,17 @@ async function handleProfileUpdate(event) {
     
     const now = new Date().toISOString();
     
-    // Update ke Sheets
+    // ✅ Generate password baru dari 4 digit terakhir nomor HP
+    const newPassword = phone.slice(-4);
+    
+    // Update ke Sheets (INCLUDE password!)
     const updated = await updateSheetDB('Members', 'id', currentUser.id, {
         name: name,
         phone: phone,
         rt: rt,
         blok: blok,
-        no: no
+        no: no,
+        password: newPassword  // ← NEW! Auto-generate dari nomor baru
     });
     
     if (!updated) {
@@ -3995,7 +3999,7 @@ async function handleProfileUpdate(event) {
         return;
     }
     
-    // Update local data
+    // Update local data (INCLUDE password!)
     const member = appData.members.find(m => m.id === currentUser.id);
     if (member) {
         member.name = name;
@@ -4003,6 +4007,7 @@ async function handleProfileUpdate(event) {
         member.rt = rt;
         member.blok = blok;
         member.no = no;
+        member.password = newPassword;  // ← NEW! Update local juga
         currentUser.name = name;
         currentUser.phone = phone;
     }
@@ -4011,20 +4016,21 @@ async function handleProfileUpdate(event) {
     document.getElementById('userName').textContent = name;
     document.getElementById('avatarInitial').textContent = name.charAt(0).toUpperCase();
     
-    msgEl.innerHTML = '<div style="color:var(--success);font-size:13px;">✅ Perubahan berhasil disimpan!</div>';
+    msgEl.innerHTML = '<div style="color:var(--success);font-size:13px;">✅ Perubahan berhasil disimpan!<br/>Password otomatis: ' + newPassword + '</div>';
     
     // Auto-clear message
     setTimeout(() => {
         msgEl.innerHTML = '';
     }, 3000);
     
-    // Kirim notif ke member
+    
+    // Kirim notif ke member dengan password baru
     await fetch('https://api.fonnte.com/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
             target: phone,
-            message: `Assalamu'alaikum ${name}!\\n\\n✅ Data pribadi Anda telah diperbarui:\\n\\n📋 Informasi Terbaru:\\n├─ Nama: ${name}\\n├─ WhatsApp: ${phone}\\n├─ Alamat: RT ${rt}, Blok ${blok}, No ${no}\\n\\nJika ada yang tidak sesuai, hubungi admin.\\n\\nBarakallahu fiik!\\n\\nAdmin Masjid Dhafinul Jariyah`,
+            message: `Assalamu'alaikum ${name}!\\n\\n✅ Data pribadi Anda telah diperbarui:\\n\\n📋 Informasi Terbaru:\\n├─ Nama: ${name}\\n├─ WhatsApp: ${phone}\\n├─ Alamat: RT ${rt}, Blok ${blok}, No ${no}\\n\\n🔐 Password Baru:\\n└─ ${newPassword} (dari 4 digit terakhir nomor HP)\\n\\nJika ada yang tidak sesuai, hubungi admin.\\n\\nBarakallahu fiik!\\n\\nAdmin Masjid Dhafinul Jariyah`,
             apikey: FONNTE_CONFIG.API_KEY
         })
     }).catch(err => console.log('Notif sent'));
