@@ -634,6 +634,187 @@
   }
   .sub-tab-content{ animation: fadeUp .3s ease; }
 
+  /* ===== LAPORAN - REPORT HERO CARD ===== */
+  .report-hero{
+    background: linear-gradient(135deg, var(--emerald-2) 0%, var(--emerald) 100%);
+    color: #fff;
+    border-radius: var(--radius-lg);
+    padding: 26px 24px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow-sm);
+  }
+  .report-hero-label{
+    font-size:12px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    opacity:.85;
+    margin-bottom:8px;
+    font-weight:600;
+  }
+  .report-hero-total{
+    font-family: var(--font-display);
+    font-size: clamp(28px, 7vw, 40px);
+    font-weight:700;
+    margin-bottom:22px;
+    line-height:1.1;
+    word-break:break-word;
+  }
+  .report-hero-stats{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:14px;
+    padding-top:18px;
+    border-top:1px solid rgba(255,255,255,.18);
+  }
+  .report-hero-stat-label{
+    font-size:11px;
+    opacity:.85;
+    margin-bottom:5px;
+    line-height:1.3;
+  }
+  .report-hero-stat-value{
+    font-family: var(--font-mono);
+    font-size: clamp(15px, 4vw, 20px);
+    font-weight:600;
+    word-break:break-word;
+  }
+
+  /* ===== LAPORAN - TAB NAVIGATION ===== */
+  .report-card{ padding:18px 16px; }
+  .report-tabs{
+    display:flex;
+    gap:6px;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    padding-bottom:16px;
+    margin-bottom:18px;
+    border-bottom:1px solid var(--border-soft);
+  }
+  .report-tabs::-webkit-scrollbar{ display:none; }
+  .report-tab-btn{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    flex-shrink:0;
+    padding:9px 16px;
+    border:1px solid var(--border-soft);
+    border-radius: 999px;
+    background: var(--sand);
+    color: var(--ink-soft);
+    font-family: var(--font-body);
+    font-size:13px;
+    font-weight:600;
+    white-space:nowrap;
+    cursor:pointer;
+    transition: background .15s ease, color .15s ease, border-color .15s ease;
+  }
+  .report-tab-btn svg{ width:15px; height:15px; flex-shrink:0; }
+  .report-tab-btn:hover{ color: var(--emerald); border-color: var(--emerald-soft); }
+  .report-tab-btn.active{
+    background: var(--emerald);
+    color: #fff;
+    border-color: var(--emerald);
+  }
+
+  /* ===== LAPORAN - FILTER GRID ===== */
+  .report-filter-grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap:12px;
+    margin-bottom:20px;
+    align-items:end;
+  }
+  .report-filter-item label{
+    font-weight:600;
+    font-size:12.5px;
+    color: var(--ink-soft);
+    margin-bottom:7px;
+    display:block;
+  }
+  .report-filter-item select{
+    padding:10px 14px;
+    border:1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size:14px;
+    width:100%;
+    background: var(--surface);
+    font-family: var(--font-body);
+    color: var(--ink);
+  }
+  .report-filter-btn{ display:flex; }
+  .report-filter-btn .btn{
+    width:100%;
+    white-space:nowrap;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  /* ===== LAPORAN - SAPI DETAIL CARD ===== */
+  .report-sapi-detail{
+    background: var(--sand);
+    border-radius: var(--radius-md);
+    padding: 18px;
+    margin-bottom: 20px;
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:16px;
+  }
+  .report-sapi-stat-label{
+    font-size:12px;
+    color: var(--ink-faint);
+    margin-bottom:6px;
+  }
+  .report-sapi-stat-value{
+    font-family: var(--font-mono);
+    font-size: clamp(16px, 4vw, 22px);
+    font-weight:600;
+    word-break:break-word;
+  }
+
+  /* ===== LAPORAN - EXPORT ACTIONS ===== */
+  .report-export-actions{
+    display:flex;
+    gap:10px;
+    margin-top:28px;
+    border-top:1px solid var(--border-soft);
+    padding-top:20px;
+    flex-wrap:wrap;
+  }
+  .report-export-btn{
+    flex:1;
+    min-width:140px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding:11px 16px;
+    border-radius: var(--radius-sm);
+    border:1px solid var(--border);
+    background: var(--surface);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size:13.5px;
+    font-weight:600;
+    cursor:pointer;
+    transition: background .15s ease, transform .1s ease;
+  }
+  .report-export-btn svg{ width:16px; height:16px; flex-shrink:0; }
+  .report-export-btn:hover{ background: var(--sand); }
+  .report-export-btn:active{ transform: scale(.98); }
+  .report-export-btn.primary{ background: var(--emerald); color:#fff; border-color: var(--emerald); }
+  .report-export-btn.primary:hover{ background: var(--emerald-2); }
+  .report-export-btn.success{ background: var(--sage); color:#fff; border-color: var(--sage); }
+  .report-export-btn.success:hover{ opacity:.9; }
+
+  /* ===== LAPORAN - CHART CONTAINER ===== */
+  .sub-tab-content canvas{
+    width:100% !important;
+    max-height:280px;
+  }
+
+
   .message-preview{
     background: #075E54;
     background-image: radial-gradient(rgba(255,255,255,.05) 1px, transparent 1.6px);
@@ -934,6 +1115,30 @@
     .hero-logo-container{ width:100px; height:100px; margin: 0 auto 24px; }
     .hero-logo{ width: 85px; height: 85px; }
     .dashboard-logo{ width: 48px; height: 48px; }
+
+    /* LAPORAN MOBILE */
+    .report-hero{ padding:22px 18px; border-radius: var(--radius-md); }
+    .report-hero-stats{ grid-template-columns: 1fr; gap:12px; }
+    .report-hero-stat{ display:flex; align-items:baseline; justify-content:space-between; }
+    .report-hero-stat-label{ margin-bottom:0; }
+
+    .report-card{ padding:16px 12px; }
+    .report-tab-btn{ padding:8px 13px; font-size:12.5px; }
+    .report-tab-btn span{ display:inline; }
+
+    .report-filter-grid{ grid-template-columns: 1fr; gap:14px; }
+    .report-filter-btn{ margin-top:0; }
+
+    .report-sapi-detail{ grid-template-columns: 1fr; gap:14px; padding:16px; }
+    .report-sapi-stat{ display:flex; align-items:baseline; justify-content:space-between; }
+    .report-sapi-stat-label{ margin-bottom:0; }
+
+    .report-export-actions{ flex-direction:column; }
+    .report-export-btn{ width:100%; }
+
+    .card h3{ font-size:14.5px; }
+    table{ font-size:12.5px; min-width:460px; }
+    table th, table td{ padding:9px 11px; }
   }
 </style>
 
@@ -1564,37 +1769,47 @@
 
       <!-- Tab: Laporan -->
       <div id="laporan" class="tab-content">
-        <div style="text-align:center;margin-bottom:24px;">
+        <div style="text-align:center;margin-bottom:20px;">
           <img src="logo-masjid.jpg" alt="Masjid Dhafinul Jariyah" class="dashboard-logo">
         </div>
-        <div class="card" style="background:linear-gradient(135deg, var(--emerald-2) 0%, var(--emerald) 100%);color:white;margin-bottom:20px;">
-          <div style="padding:30px;">
-            <div style="font-size:13px;letter-spacing:.1em;text-transform:uppercase;opacity:.9;margin-bottom:10px;">Total Tabungan Qurban</div>
-            <div style="font-size:42px;font-weight:700;margin-bottom:20px;" id="reportGrandTotal">Rp 0</div>
-            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
-              <div>
-                <div style="font-size:12px;opacity:.9;">Total Anggota</div>
-                <div style="font-size:28px;font-weight:600;" id="reportTotalMembers">0</div>
-              </div>
-              <div>
-                <div style="font-size:12px;opacity:.9;">Total Transaksi</div>
-                <div style="font-size:28px;font-weight:600;" id="reportTotalTransactions">0</div>
-              </div>
-              <div>
-                <div style="font-size:12px;opacity:.9;">Rata-rata/Anggota</div>
-                <div style="font-size:28px;font-weight:600;" id="reportAverage">Rp 0</div>
-              </div>
+        <div class="report-hero">
+          <div class="report-hero-label">Total Tabungan Qurban</div>
+          <div class="report-hero-total" id="reportGrandTotal">Rp 0</div>
+          <div class="report-hero-stats">
+            <div class="report-hero-stat">
+              <div class="report-hero-stat-label">Total Anggota</div>
+              <div class="report-hero-stat-value" id="reportTotalMembers">0</div>
+            </div>
+            <div class="report-hero-stat">
+              <div class="report-hero-stat-label">Total Transaksi</div>
+              <div class="report-hero-stat-value" id="reportTotalTransactions">0</div>
+            </div>
+            <div class="report-hero-stat">
+              <div class="report-hero-stat-label">Rata-rata/Anggota</div>
+              <div class="report-hero-stat-value" id="reportAverage">Rp 0</div>
             </div>
           </div>
         </div>
 
         <!-- TABS -->
-        <div class="card">
-          <div class="sub-tabs" style="margin-bottom:20px;">
-            <button class="sub-tab-btn active" onclick="switchLaporanTab('overview', this)">📊 Ringkasan</button>
-            <button class="sub-tab-btn" onclick="switchLaporanTab('sapi', this)">🐑 Per Sapi</button>
-            <button class="sub-tab-btn" onclick="switchLaporanTab('detail', this)">📋 Detail Transaksi</button>
-            <button class="sub-tab-btn" onclick="switchLaporanTab('analisis', this)">📈 Analisis</button>
+        <div class="card report-card">
+          <div class="report-tabs">
+            <button class="report-tab-btn active" onclick="switchLaporanTab('overview', this)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5a1 1 0 011-1h1a1 1 0 011 1v14M11 19V9a1 1 0 011-1h1a1 1 0 011 1v10M18 19v-6a1 1 0 011-1h1a1 1 0 011 1v6"/></svg>
+              <span>Ringkasan</span>
+            </button>
+            <button class="report-tab-btn" onclick="switchLaporanTab('sapi', this)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v5"/></svg>
+              <span>Per Sapi</span>
+            </button>
+            <button class="report-tab-btn" onclick="switchLaporanTab('detail', this)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5a1 1 0 011-1h9l6 6v9a1 1 0 01-1 1H5a1 1 0 01-1-1z"/><path d="M14 4v6h6"/></svg>
+              <span>Detail Transaksi</span>
+            </button>
+            <button class="report-tab-btn" onclick="switchLaporanTab('analisis', this)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 019 9h-9V3z"/></svg>
+              <span>Analisis</span>
+            </button>
           </div>
 
           <!-- TAB 1: OVERVIEW -->
@@ -1613,27 +1828,25 @@
 
           <!-- TAB 2: PER SAPI DETAIL -->
           <div id="sapiTab" class="sub-tab-content" style="display:none;">
-            <div style="margin-bottom:20px;">
-              <label style="font-weight:600;margin-bottom:8px;display:block;">Pilih Sapi:</label>
-              <select id="sapiFilter" onchange="loadSapiDetail()" style="padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;width:100%;max-width:250px;">
-                <option value="">-- Semua Sapi --</option>
+            <div class="report-filter-item" style="max-width:280px;margin-bottom:20px;">
+              <label>Pilih Sapi</label>
+              <select id="sapiFilter" onchange="loadSapiDetail()">
+                <option value="">Semua Sapi</option>
               </select>
             </div>
 
-            <div id="sapiDetailCard" style="background:var(--sand);border-radius:var(--radius-md);padding:20px;margin-bottom:20px;display:none;">
-              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-bottom:20px;">
-                <div>
-                  <div style="font-size:13px;color:var(--ink-faint);margin-bottom:6px;">Total Anggota</div>
-                  <div style="font-size:28px;font-weight:600;color:var(--emerald);" id="sapiMemberCount">0</div>
-                </div>
-                <div>
-                  <div style="font-size:13px;color:var(--ink-faint);margin-bottom:6px;">Total Terkumpul</div>
-                  <div style="font-size:28px;font-weight:600;color:var(--gold);" id="sapiTotal">Rp 0</div>
-                </div>
-                <div>
-                  <div style="font-size:13px;color:var(--ink-faint);margin-bottom:6px;">Rata-rata</div>
-                  <div style="font-size:28px;font-weight:600;color:var(--sage);" id="sapiAverage">Rp 0</div>
-                </div>
+            <div id="sapiDetailCard" class="report-sapi-detail" style="display:none;">
+              <div class="report-sapi-stat">
+                <div class="report-sapi-stat-label">Total Anggota</div>
+                <div class="report-sapi-stat-value" id="sapiMemberCount" style="color:var(--emerald);">0</div>
+              </div>
+              <div class="report-sapi-stat">
+                <div class="report-sapi-stat-label">Total Terkumpul</div>
+                <div class="report-sapi-stat-value" id="sapiTotal" style="color:var(--gold);">Rp 0</div>
+              </div>
+              <div class="report-sapi-stat">
+                <div class="report-sapi-stat-label">Rata-rata</div>
+                <div class="report-sapi-stat-value" id="sapiAverage" style="color:var(--sage);">Rp 0</div>
               </div>
             </div>
 
@@ -1648,24 +1861,27 @@
 
           <!-- TAB 3: DETAIL TRANSAKSI -->
           <div id="detailTab" class="sub-tab-content" style="display:none;">
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px;">
-              <div>
-                <label style="font-weight:600;margin-bottom:8px;display:block;">Filter Sapi:</label>
-                <select id="transactionSapiFilter" onchange="loadTransactionDetail()" style="padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;width:100%;">
-                  <option value="">-- Semua Sapi --</option>
+            <div class="report-filter-grid">
+              <div class="report-filter-item">
+                <label>Filter Sapi</label>
+                <select id="transactionSapiFilter" onchange="loadTransactionDetail()">
+                  <option value="">Semua Sapi</option>
                 </select>
               </div>
-              <div>
-                <label style="font-weight:600;margin-bottom:8px;display:block;">Filter Status:</label>
-                <select id="transactionStatusFilter" onchange="loadTransactionDetail()" style="padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;width:100%;">
-                  <option value="">-- Semua Status --</option>
+              <div class="report-filter-item">
+                <label>Filter Status</label>
+                <select id="transactionStatusFilter" onchange="loadTransactionDetail()">
+                  <option value="">Semua Status</option>
                   <option value="APPROVED">Disetujui</option>
                   <option value="PENDING">Menunggu</option>
                   <option value="REJECTED">Ditolak</option>
                 </select>
               </div>
-              <div>
-                <button class="btn btn-primary" onclick="exportTransactionCSV()" style="width:100%;margin-top:32px;">📥 Export Excel</button>
+              <div class="report-filter-item report-filter-btn">
+                <button class="btn btn-primary" onclick="exportTransactionCSV()">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;vertical-align:-3px;margin-right:6px;"><path d="M12 15V3M12 15l-4-4M12 15l4-4"/><path d="M4 17v3a2 2 0 002 2h12a2 2 0 002-2v-3"/></svg>
+                  Export Excel
+                </button>
               </div>
             </div>
 
@@ -1702,10 +1918,19 @@
           </div>
 
           <!-- EXPORT ACTIONS -->
-          <div class="actions" style="margin-top:30px;border-top:1px solid var(--border);padding-top:20px;">
-            <button class="btn btn-primary btn-small" onclick="exportLaporanPDF()">📄 Download PDF</button>
-            <button class="btn btn-success btn-small" onclick="exportLaporanExcel()">📊 Download Excel</button>
-            <button class="btn btn-info btn-small" onclick="printLaporan()">🖨️ Print</button>
+          <div class="report-export-actions">
+            <button class="report-export-btn primary" onclick="exportLaporanPDF()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5a1 1 0 011-1h9l6 6v9a1 1 0 01-1 1H5a1 1 0 01-1-1z"/><path d="M14 4v6h6"/></svg>
+              Download PDF
+            </button>
+            <button class="report-export-btn success" onclick="exportLaporanExcel()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 4v16"/></svg>
+              Download Excel
+            </button>
+            <button class="report-export-btn" onclick="printLaporan()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6M6 18H4a1 1 0 01-1-1v-5a1 1 0 011-1h16a1 1 0 011 1v5a1 1 0 01-1 1h-2M6 14h12v7H6v-7z"/></svg>
+              Print
+            </button>
           </div>
         </div>
       </div>
